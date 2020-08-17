@@ -1,0 +1,195 @@
+.parallax-container
+	position: relative
+	align-items: center
+	display: flex
+	background: linear-gradient( rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3) ), url(../img/parallax.jpg)
+	height: 500px
+	background-repeat: no-repeat
+	background-size: cover
+	background-position: center center
+	background-attachment: fixed
+	color: #fff
+	overflow: hidden
+
+	@include desktop
+		height: 100vh
+	
+	& > div:nth-child(1)
+		@extend .wrapper, .disable-higlight
+		min-width: 300px !important
+		position: relative
+		z-index: 1
+		padding: 100px 0 0 25px
+
+		& > p
+			max-width: 95%
+			@media (min-width: 550px)
+				width: 350px
+			@include desktop
+				width: auto
+				max-width: 55%
+
+		& > p:nth-child(1)
+			color: #cccccc
+			font-size: 20px
+			@include desktop
+				font-size: 35px
+
+		& > span:nth-child(2)
+			background-color: #FFF
+			display: block
+			height: 2px
+			width: 80px
+			transition: width .6s ease-in-out
+			margin: 10px 0
+			@include desktop
+				margin: 20px 0
+
+		& > p:nth-child(3)
+			color: #e7e7e7
+			font-size: 25px
+			font-weight: bold
+			margin: 0 0 30px 0
+			font-size: 25px
+			@include desktop
+				margin: 0 0 40px 0
+				font-size: 50px
+
+		& > div:nth-child(4)
+			display: flex
+			flex-wrap: wrap
+			button
+				@extend .pointer
+				display: flex
+				align-items: center
+				position: relative
+				text-transform: uppercase
+				font-size: 10px
+				padding: 10px 15px
+				border-radius: 5px
+				@include desktop
+					padding: 10px 30px
+					font-size: 15px
+				i
+					padding: 0 5px 0 0
+					@include desktop
+						padding: 0 10px 0 0
+
+				&:active
+					transform: scale(.99)
+			
+			button:nth-child(1)
+				background-color: #223D6E
+				color: #FFF
+				font-weight: bold
+				margin: 0 10px 0 0
+				&:hover
+					background-color: #274680
+			button:nth-child(2)
+				background-color: #fff0
+				border: 2px solid #fff
+				color:  #fff
+				
+			
+			
+	.circle
+		display: none
+		@include desktop
+			display: flex
+		justify-content: center
+		align-items: center
+		position: absolute
+		height: 100px
+		width: 100%
+		bottom: 0
+		& > span
+			@extend .pointer
+			display: flex
+			justify-content: center
+			align-items: center
+			height: 100px
+			width: 100px
+			border-radius: 50%
+			background-color: rgba(0, 0, 0, 0.3)
+			border: 4px solid #FFF
+			transform: scale(0.4)
+			overflow: hidden
+			@media (min-width: 900px)
+				transform: scale(0.5)
+
+			&:hover
+				border: 4px solid #C5AB4E
+				& > div
+					& > span
+						background-color: #C5AB4E
+		
+			& > div
+				@extend .inactive-link
+				height: 25px
+				width: 25px
+				transform: rotate(-135deg)
+				animation-name: direction
+				animation-duration: 3s
+				animation-iteration-count: infinite
+				animation-timing-function: ease-in-out
+
+				& > span
+					background-color: #FFF
+					display: block
+
+				& > :nth-child(1)
+					height: 25px
+					width: 6px
+					float: left
+
+				& > :nth-child(2)
+					height: 6px
+					width: 18px
+					float: right
+
+	& > div:nth-child(2)
+		display: block
+		position: absolute
+		background-color: rgba(#6E5322, .4)
+		width: 150px
+		height: 2000px
+		transform: rotate(-45deg)
+		bottom: -950px
+		left: 50px
+		@include desktop
+			width: 400px
+			height: 2000px
+			bottom: -790px
+			
+	& > div:nth-child(3)
+		display: block
+		position: absolute
+		background-color: rgba(#09230D, .35)
+		width: 50px
+		height: 2000px
+		transform: rotate(-45deg)
+		top: -900px
+		right: 50px
+		@include desktop
+			width: 100px
+			bottom: -660px
+			right: 150px
+
+@keyframes direction
+	0%
+		opacity: 0
+		margin: -140px 0 0 0
+	30%
+		opacity: 1
+		margin: -20px 0 0 0
+	70%
+		opacity: 1
+		margin: -20px 0 0 0
+	100%	
+		margin: 100px 0 0 0
+		opacity: 0
+
+
+
+				
+				

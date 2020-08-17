@@ -1,0 +1,250 @@
+.form
+	@extend .wrapper
+	display: flex
+	justify-content: center
+	position: relative
+	z-index: 2
+	max-width: 1000px !important
+	padding: 0 0 120px 0
+	background: linear-gradient( rgba(#0a1322, 0.8), rgba(#0a1322, 0.8) ), url(../img/trees-high.jpg)
+	background-size: cover
+	background-position: center center
+	background-repeat: no-repeat
+	height: 800px
+	@include desktop
+		height: auto
+		padding: 0
+		background-image: none
+		background-color: transparent
+	&.lazy
+		background-image: none
+	& > div
+		padding: 30px 0 0 0
+		@include desktop
+			padding: 0
+			flex: 1
+			min-width: 50%
+	& > div:nth-child(1)
+		position: relative
+		display: none
+		background-color: transparent
+		@include desktop 
+			display: block
+			height: 670px
+		@media (min-width: 1000px)
+			height: 500px
+
+		& > div
+			display: flex
+			justify-content: center
+			width: 100%
+			max-width: 720px
+			height: 100%
+			background: linear-gradient( rgba(#0a1322, 0.8), rgba(#0a1322, 0.8) ), url(../img/trees-high.jpg)
+			background-size: cover
+			background-position: center center
+			background-repeat: no-repeat
+			&.lazy
+				background-image: none
+			& > div
+				margin: 65px 0
+				h1, p
+					min-width: 100%
+				& > h1
+					margin: 0 0 10px 0
+					font-size: 40px
+					color: #eee
+					text-transform: uppercase
+				p
+					font-size: 20px
+					color: #bbb
+					max-width: 300px
+				& > p:nth-child(2)
+					margin: 0 0 20px 0
+				& > p:nth-child(3)
+					i
+						padding: 0 10px 0 0
+						color: #3a4c6e
+
+	& > div:nth-child(2)
+		margin: 80px 0 0 0
+		background-color: #fff
+		@include desktop
+			margin: 0 0 0 0
+			background-color: transparent
+			padding: 30px
+		& > div
+			display: block
+			margin: 0 30px
+			@include desktop
+				display: none
+				margin: 0 0 60px 0
+			h1, p
+				min-width: 100%
+			& > h1
+				margin: 0 0 5px 0
+				font-size: 35px
+				color: #223D6E
+				text-transform: uppercase
+			& > p
+				font-size: 20px
+				color: #223d6edc
+				margin: 0 0 10px 0
+				i
+					padding: 0 5px 0 0
+					color: #3a4c6e
+
+		& > form
+			z-index: 2
+			position: relative
+			min-width: 250px
+			max-width: 500px
+			background-color: #fff
+			padding: 40px 25px 25px 25px
+			@include desktop
+				display: flex
+				flex-wrap: wrap
+				background-color: transparent
+				padding: 60px 0 0 0
+				margin: 0
+
+			input
+				height: 40px
+				width: 100%
+
+			textarea
+				width: 100%
+				overflow: hidden
+				resize: none
+				min-height: 40px
+				height: auto
+
+			input, textarea
+				background-color: #ffffff00
+				font-size: 20px
+				padding: 10px
+				border-bottom: 2px solid #223D6E
+				transition: border .25s ease-in-out
+			
+			label
+				position: absolute
+				top: 11px
+				left: 9px
+				@extend .inactive-link
+				color: rgba(0, 0, 0, 0.6)
+				span
+					font-size: 12px
+					color: rgba(0, 0, 0, 0.6)
+
+			input, label
+				transition: .25s
+
+			p
+				position: absolute
+				font-size: 12px
+				margin: 2px 0 0 0 
+				color: #dc3545
+
+			& > div
+				position: relative
+				padding: 0 0 35px 0
+				&.error
+					input, textarea
+						border-bottom: 2px solid #dc3545
+				&.success
+					input, textarea
+						border-bottom: 2px solid #28a745
+				&.focus
+					label
+						top: -20px
+						left: 0
+						color: rgba(0, 0, 0, 1)
+					textarea
+						min-height: 120px
+				input, textarea
+					&:focus
+						border-bottom: 2px solid #007bff
+				&.focus.error
+					label
+						color: #dc3545
+						span
+							color: #dc3546a4
+				&.focus.success
+					label
+						color: #28a745
+						span
+							color: #28a746a1
+
+			& > div:nth-child(1), & > div:nth-child(2), & > div:nth-child(3), & > div:nth-child(4)
+				width: 100%
+				@media (min-width: 1000px)
+					width: calc( 50% - 10px )
+				& > label
+					min-width: 170px
+				& > input
+					
+			& > div:nth-child(1)
+				@media (min-width: 1000px)
+					margin: 0 10px 0 0
+				& > label
+				& > input
+
+			& > div:nth-child(2)
+				@media (min-width: 1000px)
+					float: left
+					margin: 0 0 0 10px
+				& > label
+				& > input
+
+			& > div:nth-child(3)
+				@media (min-width: 1000px)
+					margin: 0 10px 0 0
+				& > label
+				& > input
+
+			& > div:nth-child(4)
+				@media (min-width: 1000px)
+					float: left
+					margin: 0 0 0 10px
+				& > label
+				& > input
+
+			& > div:nth-child(5)
+				width: 100%
+				& > label
+				& > textarea
+
+			& > button
+				display: flex
+				justify-content: center
+				padding: 10px 60px
+				border-radius: 5px
+				color: #fff
+				background-color: #223d6ef3
+				font-size: 15px
+				margin: 10px 0 0 0
+				@include desktop
+					color: #223D6E
+					border: 2px solid #223D6E
+					background-color: transparent
+					margin: 0
+					font-size: 20px
+				&:hover
+					background-color: #223d6ef3
+					color: #fff
+					@extend .pointer
+				&:active
+					transform: scale(0.99)
+				i
+					display: none
+					position: absolute
+					width: 75px
+					background-color: #28a745
+
+			&.success
+				& > button
+					color: #ffffff
+					background-color: #28a745
+					border: 0
+					i
+						display: block

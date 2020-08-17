@@ -1,0 +1,179 @@
+.thumbnail-container
+	@extend .pointer
+	display: flex
+	flex-direction: column
+	width: 100%
+	padding: 30px 0 0 0
+	overflow: hidden
+
+	@include desktop
+		flex-direction: row
+		justify-content: center
+
+	& > div
+		padding: 20% 20% 200px 20%
+		position: relative
+		min-width: 280px
+		min-height: 140px
+		margin: 0
+
+		@include listDesktop
+			padding: 20% 15%
+			flex: 1
+
+		@media (min-width: 1200px)
+			padding: 10%
+
+		& > div:nth-child(1)
+			width: 100%
+			@extend .inactive-link
+			@extend .disable-higlight
+			position: absolute
+			top: 0
+			left: 0
+			color: #FFF
+			padding: 20px
+			transition: all .4s ease-in-out
+			margin: 20px 0 0 0
+			height: 170px
+			@media (min-width: 450px)
+				padding: 20px 20px 40px 20px
+				
+			@include desktop
+				top: auto
+				bottom: 0
+				left: 0
+				
+			@media (min-width: 1200px)
+				padding: 20px
+				margin: 0 0 -80px 0
+
+			
+
+			& > p:nth-child(1)
+				font-size: 25px
+				font-weight: 800px
+				margin: 0 0 25px 0
+				width: auto
+				@media (min-width: 880px)
+					font-size: 30px
+				@media (min-width: 1200px)
+					font-size: 35px
+
+			& > span
+				background-color: #FFF
+				display: none
+				height: 7px
+				width: 0
+				transition: width .6s ease-in-out
+				margin: 0 0 20px 0
+
+				@media (min-width: 1200px)
+					display: block
+
+			& > p:nth-child(2)
+				@media (min-width: 450px)
+					font-size: 15px
+					height: 60px
+
+				@include desktop
+					padding: 0 50px 0 0
+		&:hover
+			& > div
+				@include desktop
+					margin: 0
+				& > :nth-child(1)
+					color: #C5AB4E
+				& > :nth-child(2)
+					width: 65px
+				& > :nth-child(3)
+
+			.circle-arrow-thumbnail
+				& > span
+					border: 4px solid #C5AB4E
+					& > div
+						span
+							background-color: #C5AB4E
+			
+
+			
+
+	& > div:nth-child(1)
+		background: linear-gradient( rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4) ), url(../img/shooter-min.jpg)
+		background-size: cover
+		background-position: center
+		
+	& > div:nth-child(2)
+		background: linear-gradient( rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4) ), url(../img/hunter-min.jpg)
+		background-size: cover
+		background-position: center
+		
+	& > div:nth-child(3)
+		background: linear-gradient( rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4) ), url(../img/forest_sun-min.jpg)
+		background-size: cover
+		background-position: center
+
+.circle-arrow-thumbnail
+	@extend .circle-arrow
+	transform: scale(0.5)
+	top: -10px
+	right: -10px
+
+	@include desktop
+		top: 0
+		right: 0
+
+	& > span
+		transform: rotate(135deg)
+
+.circle-arrow
+	@extend .inactive-link
+	position: absolute
+	
+	& > span
+		@extend .pointer
+		display: flex
+		justify-content: center
+		align-items: center
+		height: 100px
+		width: 100px
+		border-radius: 50%
+		background-color: rgba(0, 0, 0, 0.3)
+		border: 4px solid #FFF
+		overflow: hidden
+		transform: rotate(135deg)
+
+		&:hover
+			background-color: rgba(#223D6E, .3)
+	
+		& > div
+			height: 25px
+			width: 25px
+
+			& > span
+				background-color: #FFF
+				display: block
+
+			& > :nth-child(1)
+				height: 25px
+				width: 6px
+				float: left
+
+			& > :nth-child(2)
+				height: 6px
+				width: 18px
+				float: right
+
+			& > :nth-child(3)
+				height: 6px
+				width: 6px
+				float: left
+				margin: 1px 0 0 1px
+
+			& > :nth-child(4)
+				height: 8.5px
+				width: 17.35px
+				transform: rotate(45deg)
+				margin: 12px 0 0 8px 
+		
+		

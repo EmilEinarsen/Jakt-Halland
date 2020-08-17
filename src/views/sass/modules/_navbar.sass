@@ -1,0 +1,171 @@
+.top-bar
+	z-index: 4
+	position: fixed
+	top: 0
+	height: 40px
+	width: 100%
+	background-color: #223D6E
+	display: flex
+	justify-content: center
+	align-items: center
+
+	& > p
+		font-size: 15px
+		color: #fff
+		display: none
+		
+		@include desktop
+			display: block
+	
+nav
+	z-index: 4
+	position: fixed
+	top: 40px
+	height: 60px
+	width: 100%
+	min-width: 275px
+	color: #C5AB4E
+	background-color: #fff
+	border-bottom: 2px solid #223D6E
+	font-size: 20px
+	text-transform: uppercase
+		
+	& > div
+		@extend .wrapper
+		display: flex
+		justify-content: space-between
+
+		.icon-container
+			@extend .pointer
+			@extend .disable-higlight
+			display: flex
+			justify-content: center
+			align-items: center
+			padding: 10px 0
+			margin: 0 0 0 15px
+			@media (min-width: 400px)
+				margin: 0 0 0 25px
+			
+			& > *
+				@extend .inactive-link
+
+			& > div
+				background: url(../img/icon_trans_cut.png)
+				background-size: contain
+				background-repeat: no-repeat
+				display: block
+				padding: 20px
+			
+			& > p
+				@extend .no-wrap
+				font-weight: 700
+				letter-spacing: 2px
+				margin: 0 0 0 10px
+			
+			&:hover
+				border-bottom: 4px solid #223D6E
+				padding: 5px 0 1px 0
+				& > div
+					background: url(../img/icon_trans_cut-blue.png)
+					background-size: contain
+					background-repeat: no-repeat
+				& > p
+					color: #223D6E
+				
+
+		.middle-text-container
+			display: none
+			position: absolute
+			height: 60px
+			text-align: center
+			right: calc( 50vw - 185px )
+			@include desktop
+				display: block
+				width: 300px
+
+			& > p
+				margin: 20px 0 0 0
+				width: auto
+
+		.navbar-toggle
+			@extend .disable-higlight
+			height: 60px
+			@include desktop
+				width: 300px
+			
+			& > a
+				@extend .pointer
+				float: right
+				width: 40px
+				height: 60px
+				letter-spacing: 2px;
+				font-size: 0
+				margin: 0 15px 0 0
+				@media (min-width: 400px)
+					margin: 0 25px 0 0
+
+				@include listDesktop
+					width: auto
+					padding: 20px 0
+					font-size: 20
+
+				& > i
+					padding: 20px 9.5px 20px 11.5px
+					font-size: 20px
+					@include listDesktop
+						padding: 0
+						margin: 0 10px 0 0
+
+				&:hover
+					color: #223D6E
+					border-bottom: 4px solid #223D6E
+
+
+			& > :nth-child(2)
+				display: none
+
+			&.open > :nth-child(1)
+				display: none
+
+			&.open > :nth-child(2)
+				display: block
+				color: #223D6E
+				border-bottom: 4px solid #223D6E
+
+	.main-nav
+		@extend .disable-higlight
+		display: none
+		float: right
+		width: 100%
+		height: 100vh
+		list-style-type: none
+		color: #223D6E
+		background-color: rgba(0, 0, 0, 0.5)
+
+		@include desktop
+			width: 420px
+			height: auto
+			border-left: 2px solid #223D6E
+
+		@media (min-width: 1440px)
+			border-right: 2px solid #223D6E
+			
+
+		&.visible
+			display: block
+
+		& > li
+			padding: 15px 25px
+			background-color: #fff
+			border-bottom: 2px solid #223d6e
+
+			& > a 
+				@extend .inactive-link
+
+			&:hover
+				@extend .pointer
+				color: #FFF
+				background-color: #223d6ee0
+
+
+		

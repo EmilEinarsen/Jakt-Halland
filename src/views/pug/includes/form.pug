@@ -1,0 +1,46 @@
+<div class="form">
+	<div>
+		<div class="lazy">
+			<div>
+				<h1>KONTAKTA OSS</h1>
+				<p>Tveka inte, ställ frågor och anmälan intresse</p>
+				<p><i class="fas fa-envelope"></i> info@jakthalland.se</p>
+			</div>
+		</div>
+	</div>
+	<div>
+		<div>
+			<h1>KONTAKTA OSS</h1>
+			<p>Tveka inte, ställ frågor och anmälan intresse</p>
+			<p><i class="fas fa-envelope"></i> info@jakthalland.se</p>
+		</div>
+		<form class="messager" id="form" action="https://formspree.io/mqkyjrro" method="POST">
+			<div>
+				<label for="male">Namn <span>(För- och efternamn)</span> *</label>
+				<input type="text" name="Namn/företag" id="name">
+				<p id="nameFeedback"></p>
+			</div>
+			<div>
+				<label for="male">Ämne</label>
+				<input type="text" name="Ämne" id="subject">
+				<p id="subjectFeedback"></p>
+			</div>
+			<div>
+				<label for="male">E-post <span>(info@exempel.se)</span> *</label>
+				<input type="text" name="E-post" id="email">
+				<p id="emailFeedback"></p>
+			</div>
+			<div>
+				<label for="male">Telefonnummer</label>
+				<input type="text" name="Telefonnummer" id="phone">
+				<p id="phoneFeedback"></p>
+			</div>
+			<div>
+				<label for="male">Meddelande *</label>
+				<textarea name="Meddelande" id="message" style="height: 43px"></textarea>
+				<p id="messageFeedback"></p>
+			</div>
+			<button>SKICKA<i class="fas fa-check"></i></button>
+		</form>
+	</div>
+</div>
