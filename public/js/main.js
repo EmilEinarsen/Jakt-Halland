@@ -4,32 +4,37 @@ const queryTarget = param => document.querySelector(param)
 const queryTargetAll = param => document.querySelectorAll(param)
 const body = () => document.body
 const tools = new Tools()
+const validate = new Validate()
+const announce = new Announce()
+const sort = new Sort()
 const scroll = new Scroll()
 const menu = new Menu()
 const page = new Page()
 const date = new Date()
 const server = new Server()
-let form
-let lazyload
+let form = new Form()
+let lazyload = new Lazyload()
 let months = ["Januari", "Februari", "Mars", "April", "Maj", "Juni", 
 "Juli", "Augusti", "September", "Oktober", "November", "December"]
 
 
 document.addEventListener("DOMContentLoaded", () => {
-	form = new Form()
-	lazyload = new Lazyload()
-	page.announceApproachingEvents()
-	document.addEventListener("scroll", lazyload.lazyload)
-	window.addEventListener("resize", lazyload.lazyload)
-	window.addEventListener("orientationChange", lazyload.lazyload)
+	announce.events()
+	document.addEventListener("scroll", lazyload.load)
+	window.addEventListener("resize", lazyload.load)
+	window.addEventListener("orientationChange", lazyload.load)
 	const inputs = [...queryTargetAll('input'), queryTarget('textarea')]
-	inputs.map(input => input.addEventListener("focus", e => form.toggleInputFocus(e)))
+	inputs.map(input => input.addEventListener("focus", e => {
+		page.toggleInputFocus(e)
+	}))
 	inputs.map(input => input.addEventListener("blur", e => {
-		form.toggleInputFocus(e)
-		form.removeClassSuccessIfInputEmpty(e)
+		const id = targetId(e)
+		page.toggleInputFocus(e)
+		validate.isInputValid(e.target.value, id) ? page.inputSuccess(id): page.removeSuccess(id)
 		page.resizeTextareaToFitContent(e)
 	}))
 })
+
 document.addEventListener("click", e => { 
 	const id = targetId(e) 
 
@@ -55,20 +60,31 @@ queryTarget("#form").addEventListener("submit", e => {
 	e.preventDefault()
 	form.requestMailing(e)
 })
-queryTarget("#form").addEventListener("input", e => { if(targetId(e) === "message") page.resizeTextareaToFitContent(e); form.validate(e) })
+queryTarget("#form").addEventListener("input", e => { 
+	if(targetId(e) === "message") page.resizeTextareaToFitContent(e); 
+	validate.isFormValid(e) })
 
 
 function Scroll() {
+	let y
+	getPositionY = () => window.scrollY
+
 	this.disableScroll = () => {
-		page.addPositionYToBody()
+		y = getPositionY()
+		page.setVerticlePositionOfBody(y)
 		queryTarget('body').classList.add('stop-scrolling')
 	}
-
 	this.enableScroll = () => {
-		if(!isScrollingDisabled()) return
+		if(!validate.isScrollingDisabled()) return
+		page.removeVerticlePositionOfBody()
 		queryTarget('body').classList.remove('stop-scrolling')
-		this.scrollToInstantly({top: tools.stringToInt(body().style.top) * -1})
-		page.removePositionYFromBody()
+		this.scrollToInstantly({top: y})
+	}
+
+	this.keepYPosition = func => {
+		y = getPositionY()
+		func()
+		this.scrollToInstantly({top: y})
 	}
 
 	this.scrollToParameter = (param) => {
@@ -76,153 +92,45 @@ function Scroll() {
 		const y = queryTarget(param).getBoundingClientRect().top + window.pageYOffset + yOffset
 		window.scrollTo({top: y, behavior: 'smooth'})
 	}
-
-	
 	this.scrollToTop = () => window.scrollTo({top: 0, behavior: 'smooth'})
 	this.scrollToBottom = () => window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'})
 	this.scrollToInstantly = param => window.scrollTo(param)
-	isScrollingDisabled = () => queryTarget('body').classList.contains('stop-scrolling')
 }
 
 
 function Menu() {
-	isMenuVisible = () => queryTarget('.main-nav').classList.contains('visible')
-	
+	this.toggleMenu = () => {
+		queryTarget('.main-nav').classList.toggle('visible')
+		if(validate.isWidthMobile()) 
+			validate.isMenuVisible() ? scroll.disableScroll() : scroll.enableScroll()
+		queryTarget('.navbar-toggle').classList.toggle('open')
+	}
 	this.closeMenu = () => {
 		scroll.enableScroll()
-		if(!isMenuVisible()) return
-		hideMenu()
-		resetMenuButton()
-	}
-	this.toggleMenu = () => {
-		toggleMenuVisibilty()
-		if(tools.isWidthMobile()) toggleScroll()
-		toggleMenuButton()
-	}
-	
-	toggleMenuVisibilty = () => queryTarget('.main-nav').classList.toggle('visible')
-	hideMenu = () => queryTarget('.main-nav').classList.remove('visible')
-
-	toggleMenuButton = () => queryTarget('.navbar-toggle').classList.toggle('open')
-	resetMenuButton = () => queryTarget('.navbar-toggle').classList.remove('open')
-	
-	toggleScroll = () => {
-		if(isMenuVisible()) scroll.disableScroll()
-		else scroll.enableScroll()
+		if(!validate.isMenuVisible()) return
+		queryTarget('.main-nav').classList.remove('visible')
+		queryTarget('.navbar-toggle').classList.remove('open')
 	}
 }
 
 
 function Form() {
 	const xhr = new XMLHttpRequest()
-
 	this.requestMailing = e => {
-		if(this.validate(e)) attemptDispatch()
+		if(validate.isFormValid(e)) attemptDispatch()
 	}
 	attemptDispatch = () => {
 		xhr.open(queryTarget("#form").method, queryTarget("#form").action)
 		xhr.setRequestHeader("Accept", "application/json")
 		xhr.onreadystatechange = () => {
 			if (xhr.readyState !== XMLHttpRequest.DONE) return
-			if(xhr.status === 200) success()
+			if(xhr.status === 200) announce.formSubmissionSuccess()
 		}
-		xhr.send(fetchContent())
+		xhr.send(new FormData(queryTarget("#form")))
 	}
-	this.validate = e => {
-		let errorMessages = {
-			name: `För- och efternamn`, 
-			subject: ``, 
-			email: `Måste innehålla "@" och "."`, 
-			message: `Du saknar ett meddelande`,
-			phone: `Inte ett giltigt telefonmnummer`
-		}
-		if(e.type !== 'submit') {
-			id = targetId(e)
-			const inputContent = queryTarget(`#${id}`).value.trim()
-			if(this.isInputValid(inputContent, id)) errorMessages[id] = ''
-			displayFeedback({[id]: errorMessages[id]})
-		} else {
-			const input = e.target.elements
-			const inputContent = { 
-				name: input.name.value.trim(), 
-				subject: input.subject.value.trim(), 
-				email: input.email.value.trim(), 
-				message: input.message.value.trim(),
-				phone: input.phone.value.trim()
-			}
-			for(let key in inputContent) {
-				if(this.isInputValid(inputContent[key], key)) errorMessages[key] = ''
-				displayFeedback({[key]: errorMessages[key]})
-			}
-			for(let key in inputContent)
-				if(errorMessages[key] !== '') { return false }
-			
-			return true
-		}
-	}
-	this.isInputValid = (input, id) => {
-		if(id === 'name')
-			if(input.split(' ').length < 2) return false
-		if(id === 'subject')
-			if(input === '') return true
-		if(id === 'email') {
-			if(input.split('@').length !== 2) return false
-			if(input.split('.').length !== 2 || input.split('.')[1] === '') return false
-			if(input.split(/(\W)/).length !== 5) return false
-		}
-		if(id === 'phone') {
-			if(input === '') return true
-			if(!input.match(/^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/)) return false
-		}
-		return input !== '' ? true : false
-	}
-	fetchContent = () => new FormData(queryTarget("#form"))
-	success = () => {
-		addButtonSuccess()
-		resetForm()
-		tools.throttle(function () {
-			removeInputSuccess()
-			page.resetTextareaHeight()
-			removeButtonSuccess()
-		}, 3000)
-	}
-	displayFeedback = errorMessages => {
-		for(let key in errorMessages) {
-			errorMessages[key] !== '' ? displayInputError(errorMessages[key], key) : displayInputSuccess(key)
-		}
-	}
-	this.toggleInputFocus = (e) => {
-		if(!e) { [...queryTargetAll(".focus")].map(input => input.classList.remove("focus")); return}
-		if(e.target.value) return
-		removeInputError(targetId(e))
-		e.target.parentElement.classList.toggle("focus")
-	}
-	this.removeClassSuccessIfInputEmpty = e => {
-		if(e.target.value) return
-		e.target.classList.remove('success')
-	}
-	displayInputSuccess = key => {
-		removeInputError(key)
-		queryTarget(`#${key}`).parentElement.classList.add('success')
-	}
-	addButtonSuccess = () => queryTarget('form').parentElement.classList.add('success')
-	removeButtonSuccess = () => queryTarget('form').parentElement.classList.remove('success')
-	displayInputError = (error, key) => {
-		page.addInnerOf(`#${key}Feedback`, `<i class="fas fa-exclamation-circle"></i> ${error}`)
-		removeInputSuccess(key)
-		queryTarget(`#${key}`).parentElement.classList.add('error')
-	}
-	removeInputSuccess = key => {
-		if(!key) return [...queryTargetAll('.success')].map(e => e.classList.remove('success'))
-		queryTarget(`#${key}`).parentElement.classList.remove('success')
-	}
-	removeInputError = key => {
-		page.addInnerOf(`#${key}Feedback`, ``)
-		queryTarget(`#${key}`).parentElement.classList.remove('error')
-	}
-	resetForm = () => {
+	this.reset = () => {
 		queryTarget("#form").reset()
-		this.toggleInputFocus()
+		page.toggleInputFocus()
 	}
 }
 
@@ -230,10 +138,9 @@ function Form() {
 function Page() {
 	this.removePreloader = () => {
 		queryTarget('.loader_bg').classList.add('hidden')
-		/* setTimeout(() => this.removeOuterOf('.loader_bg'), 500) */
 	}
-	this.addPositionYToBody = () => body().style.top = `-${window.scrollY}`
-	this.removePositionYFromBody = () => body().style.top = ''
+	this.setVerticlePositionOfBody = y => body().style.top = `-${y}`
+	this.removeVerticlePositionOfBody = () => body().style.top = ''
 	this.addInnerOf = (param, content) => {
 		queryTarget(param).innerHTML = content
 	}
@@ -247,61 +154,85 @@ function Page() {
 		e.target.nextElementSibling.classList.toggle("closed")
 		e.target.children[0].classList.toggle("open")
 	}
+	
 	this.resizeTextareaToFitContent = () => {
-		const keepPositionYOnResize = () => {
-			this.addPositionYToBody()
-			resizeTextarea()
-			scroll.scrollToInstantly({top: tools.stringToInt(body().style.top) * -1})
-			this.removePositionYFromBody()
-		}
-		const resizeTextarea = () => {
-			this.resetTextareaHeight()
-			setTextareaHeight(`${queryTarget('#message').scrollHeight}px`)
-		}
-		if(!tools.isWidthMobile()) tools.throttle(keepPositionYOnResize, 17)
+		if(validate.isWidthMobile()) return
+		scroll.keepYPosition(resizeTextarea)
+	}
+	resizeTextarea = () => {
+		this.resetTextareaHeight()
+		setTextareaHeight(`${queryTarget('#message').scrollHeight}px`)
 	}
 	this.resetTextareaHeight = () => {
 		if(!queryTarget('#message').value) setTextareaHeight('40px')
 		else setTextareaHeight('')
 	}
-	this.announceApproachingEvents = () => {
-		server.fetch().then(()=>{
-			let [hunter, leader] = server.getEventsByEvent()
-			hunter = ifNeededConcatDateStrings(hunter)
-			leader = tools.produceDateString(leader[0])
-			this.addInnerOf('#navbarInfo', `Nästa kurstillfällen: Intensiv Jägarexamen, den ${hunter}. Jaktledarutbildning, den ${leader}.`)
-			this.addInnerOf('#intensiveEventDates', `Nästa kurstillfälle är den ${hunter}.`)
-			this.addInnerOf('#leadershipEventDates', `Nästa kurstillfälle är den ${leader}.`)
-		})
-		const ifNeededConcatDateStrings = events => {
-			if(events.length === 1) return tools.produceDateString(events[0])
-			return `${tools.produceDateString(events[0])} och ${tools.produceDateString(events[1])}`
-		}
-	}
 	setTextareaHeight = valueInPx => queryTarget('#message').style.height = valueInPx
+
+	
+	this.formFeedback = errorMessages => {
+		for(let key in errorMessages)
+			errorMessages[key] ? this.inputError(errorMessages[key], key) : this.inputSuccess(key)
+	}
+	this.inputSuccess = key => {
+		removeInputError(key)
+		queryTarget(`#${key}`).parentElement.classList.add('success')
+	}
+	this.removeSuccess = key => {
+		if(!key) return [...queryTargetAll('.success')].map(e => e.classList.remove('success'))
+		queryTarget(`#${key}`).parentElement.classList.remove('success')
+	}
+	this.inputError = (error, key) => {
+		page.addInnerOf(`#${key}Feedback`, `<i class="fas fa-exclamation-circle"></i> ${error}`)
+		this.removeSuccess(key)
+		queryTarget(`#${key}`).parentElement.classList.add('error')
+	}
+	removeInputError = key => {
+		page.addInnerOf(`#${key}Feedback`, ``)
+		queryTarget(`#${key}`).parentElement.classList.remove('error')
+	}
+	this.toggleButtonSuccess = () => queryTarget('form').classList.toggle('success')
+	this.toggleInputFocus = (e) => {
+		if(!e) return [...queryTargetAll(".focus")].map(input => input.classList.remove("focus"))
+		if(e.target.value) return
+		removeInputError(targetId(e))
+		e.target.parentElement.classList.toggle("focus")
+	}
+}
+
+
+function Announce() {
+	this.events = async() => {
+		const [intensive, leader] = tools.structureApprouchingEvents(await server.getEvents())
+		page.addInnerOf('#navbarInfo', `Nästa kurstillfällen: Intensiv Jägarexamen, den ${intensive}. Jaktledarutbildning, den ${leader}.`)
+		page.addInnerOf('#intensiveEventDates', `Nästa kurstillfälle är den ${intensive}.`)
+		page.addInnerOf('#leadershipEventDates', `Nästa kurstillfälle är den ${leader}.`)
+	}
+	this.formSubmissionSuccess = () => {
+		page.toggleButtonSuccess()
+		form.reset()
+		tools.throttle(() => {
+			page.removeSuccess()
+			page.resetTextareaHeight()
+		}, 3000)
+	}
 }
 
 
 function Lazyload() {
 	let images = document.querySelectorAll(".lazy")
 	loadImage = image => image.classList.remove("lazy")
-	isImagesLoaded = () => images.length === 0
 
-	this.lazyload = () => {
-		tools.throttle(load, 17)
-	}
-	load = () => {
-		images = [...images].filter(image => {
-			console.log(image,tools.isInWindow(image),image.offsetTop)
-			if(tools.isInWindow(image)) loadImage(image)
-			else return image
-		})
-		if(isImagesLoaded()) removeObserver()
+	this.load = () => {
+		tools.throttle(() => {
+			if(!images.length) removeObserver()
+			images = [...images].filter(image => validate.isInWindow(image) ? loadImage(image) : image)
+		}, 17)
 	}
 	removeObserver = () => {
-		document.removeEventListener("scroll", this.lazyload)
-		window.removeEventListener("resize", this.lazyload)
-		window.removeEventListener("orientationChange", this.lazyload)
+		document.removeEventListener("scroll", this.load)
+		window.removeEventListener("resize", this.load)
+		window.removeEventListener("orientationChange", this.load)
 	}
 }
 
@@ -315,16 +246,22 @@ function Server() {
 			const [events] = await Promise.all([
 				(await fetch("https://wordpress.jakthalland.se/wp-json/wp/v2/events")).json(),
 			])
-			sortData(events)
+			sort.sortData(events)
 		} catch (err) {
+			tools.throttle(this.fetch, 5000)
 		  	console.log(err)
 		}
 	}
+	this.getEvents = async() => {
+		await this.fetch()
+		return Promise.resolve(sort.sortDataByEvent())
+	}
+}
 
-	sortData = (events) => {
-		this.data = {
-			events: [...events]
-			.filter(event => isEventInFuture(event.acf.startDate))
+function Sort() {
+	this.sortData = (events) => {
+		server.data = {
+			events: [...events].filter(event => validate.isEventInFuture(event.acf.startDate))
 			.map(event => {
 				return {
 					event: event.acf.event,
@@ -336,30 +273,91 @@ function Server() {
 				}
 			})
 			.sort((eventA, eventB) => {
-				return tools.compareDates(
-					tools.turnDateStringIntoIntObject(eventA.info.startDate), 
-					tools.turnDateStringIntoIntObject(eventB.info.startDate)
+				return validate.compareDates(
+					tools.dateStringIntoIntObject(eventA.info.startDate), 
+					tools.dateStringIntoIntObject(eventB.info.startDate)
 				)
 			})
 		}
 	}
-	isEventInFuture = eventStart => {
-		const currentDate = getDate()
-		const eventDate = tools.turnDateStringIntoIntObject(eventStart)
-		return tools.compareDates(currentDate, eventDate) === (0 || -1) ? true : false
+	this.sortDataByEvent = () => {
+		return [...server.data.events].reduce(([intensive, leader, calm, weekend, other], event) => {
+			return (
+				event.event === "Jägarexamen (Intensiv)" ? [[...intensive, event], leader, calm, weekend, other]
+				: event.event === "Jaktledarutbildning" ? [intensive, [...leader, event], calm, weekend, other]
+				: event.event === "Jägarexamen (Lugn)" ? [intensive, leader, [...calm, event], weekend, other]
+				: event.event === "Jakt helg" ? [intensive, leader, calm, [...weekend, event], other]
+				: [intensive, leader, calm, weekend, [...other, event]]
+			)
+		}, [[], [], [], [], []])
 	}
-	this.getEventsByEvent = () => {
-		return [...this.data.events].reduce(([hunter, leader], event) => {
-			return event.event === "Jägarexamen (Intensiv)" ? [[...hunter, event], leader] : [hunter, [...leader, event]];
-		}, [[], []])
-	}
+}
 
-	getDate = () => {
-		return {
-			date: date.getDate(),
-			month: date.getMonth() + 1,
-			year: date.getFullYear(),
+function Validate() {
+	this.isWidthMobile = () => tools.getScreenWidth() < 880
+	this.isInWindow = param => param.offsetTop < (window.innerHeight + window.pageYOffset)
+
+	this.isScrollingDisabled = () => queryTarget('body').classList.contains('stop-scrolling')
+	this.isMenuVisible = () => queryTarget('.main-nav').classList.contains('visible')
+
+	this.compareDates = (dateA, dateB) => {
+		const scoreOfDate = (dateA.year*365 + dateA.month * 31 + dateA.date) - (dateB.year*365 + dateB.month * 31 + dateB.date)
+		return scoreOfDate === 0 ? 0 : scoreOfDate < 0 ? -1 : 1 
+		// 0 = now, -1 = future, 1 = past
+	}
+	this.isEventInFuture = eventStart => {
+		const comparedDates = validate.compareDates(
+			tools.getDate(), 
+			tools.dateStringIntoIntObject(eventStart)
+		)
+		return (comparedDates === (0 || -1) ) ? true : false
+	}
+	this.isFormValid = e => {
+		let errorMessages = {
+			name: `För- och efternamn`, 
+			subject: ``, 
+			email: `Måste innehålla "@" och "."`, 
+			message: `Du saknar ett meddelande`,
+			phone: `Ogiltigt telefonmnummer`
 		}
+		if(e.type !== 'submit') {
+			id = targetId(e)
+			const inputContent = queryTarget(`#${id}`).value.trim()
+			if(this.isInputValid(inputContent, id)) errorMessages[id] = ''
+			page.formFeedback({[id]: errorMessages[id]})
+		} else {
+			const input = e.target.elements
+			const inputContent = { 
+				name: input.name.value.trim(), 
+				subject: input.subject.value.trim(), 
+				email: input.email.value.trim(), 
+				message: input.message.value.trim(),
+				phone: input.phone.value.trim()
+			}
+			for(let key in inputContent) {
+				if(this.isInputValid(inputContent[key], key)) errorMessages[key] = ''
+				page.formFeedback({[key]: errorMessages[key]})
+			}
+			for(let key in inputContent)
+				if(errorMessages[key]) return false
+			return true
+		}
+	}
+	this.isInputValid = (input, id) => {
+		if(id === 'name')
+			if(input.split(' ').length < 2) return false
+		if(id === 'subject')
+			if(!input) return true
+		if(id === 'email') {
+			if(input.split('@').length !== 2) return false
+			if(input.split('.').length !== 2 || !input.split('.')[1]) return false
+			if(input.split(/(\W)/).length !== 5) return false
+		}
+		if(id === 'phone') {
+			if(input === '') return true
+			if(!input.match(/^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/)) return false
+		}
+		return input ? true : false
 	}
 }
 
@@ -367,42 +365,52 @@ function Server() {
 function Tools() {
 	let throttle
 
-	this.isWidthMobile = () => this.getScreenWidth() < 880
-	this.isInWindow = param => param.offsetTop < (window.innerHeight + window.pageYOffset)
 	this.getScreenWidth = () => screen.width
 
 	this.throttle = (func, ms) => {
-		if(throttle) clearTimeout(throttle)
+		this.cancelThrottle()
 		throttle = setTimeout(() => func(), ms)
 	}
+	this.cancelThrottle = () => throttle ? clearTimeout(throttle) : ''
 
-	this.turnNumberIntoMonth = number => {
-		return months[number-1]
+	this.numberToMonth = number => months[number-1]
+
+	this.dateStringIntoIntObject = string => {
+		dateArr = string.split("/")
+		return {
+			date: this.stringToInt(dateArr[0]),
+			month: this.stringToInt(dateArr[1]),
+			year: this.stringToInt(dateArr[2]),
+		}
 	}
 
-	this.turnDateStringIntoIntObject = string => {
-		arrray = string.split("/")
+	this.getDate = () => {
 		return {
-			date: this.stringToInt(arrray[0]),
-			month: this.stringToInt(arrray[1]),
-			year: this.stringToInt(arrray[2]),
+			date: date.getDate(),
+			month: date.getMonth() + 1,
+			year: date.getFullYear(),
 		}
 	}
 
 	this.stringToInt = string => parseInt(string)
 
 	this.produceDateString = event => {
-		const startDate = this.turnDateStringIntoIntObject(event.info.startDate)
-		const endDate = this.turnDateStringIntoIntObject(event.info.endDate)
+		console.log(event)
+		return combineDatesBasedOnMonthAndDate(
+			this.dateStringIntoIntObject(event.info.startDate),
+			this.dateStringIntoIntObject(event.info.endDate)
+		)
+	}
+	combineDatesBasedOnMonthAndDate = (startDate, endDate) => {
+		const startMonth = this.numberToMonth(startDate.month)
 		if(startDate.month === endDate.month)
-			if(startDate.date === endDate.date) return `${startDate.date} ${this.turnNumberIntoMonth(startDate.month)}` 
-			else return `${startDate.date}-${endDate.date} ${this.turnNumberIntoMonth(startDate.month)}`
-		else return `${startDate.date} ${this.turnNumberIntoMonth(startDate.month)} -${endDate.date} ${this.turnNumberIntoMonth(endDate.month)}`
+			return startDate.date === endDate.date ? `${startDate.date} ${startMonth}` 
+			: `${startDate.date} - ${endDate.date} ${startMonth}`
+		else return `${startDate.date} ${startMonth} -${endDate.date} ${this.numberToMonth(endDate.month)}`
 	}
-
-	this.compareDates = (dateA, dateB) => {
-		const scoreOfDate = (dateA.year*365 + dateA.month * 31 + dateA.date) - (dateB.year*365 + dateB.month * 31 + dateB.date)
-		return scoreOfDate === 0 ? 0 : scoreOfDate < 0 ? -1 : 1 
-		// 0 = now, -1 = future, 1 = past
-	}
+	this.structureApprouchingEvents = ([intensive, leader]) => [
+		intensive.length === 1 ? tools.produceDateString(intensive[0]) 
+			: `${tools.produceDateString(intensive[0])} och ${tools.produceDateString(intensive[1])}`,
+		tools.produceDateString(leader[0])
+	]
 }
