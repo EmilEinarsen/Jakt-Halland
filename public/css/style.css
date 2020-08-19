@@ -186,7 +186,6 @@ nav {
   background-color: #fff;
   border-bottom: 2px solid #223D6E;
   font-size: 20px;
-  text-transform: uppercase;
 }
 
 nav > div {
@@ -208,8 +207,10 @@ nav > div .icon-container {
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-  padding: 10px 0;
-  margin: 0 0 0 15px;
+  margin: 0 0 1px 15px;
+  border-top: 2px solid #fff;
+  border-bottom: 2px solid #223D6E;
+  height: 60px;
 }
 
 @media (min-width: 400px) {
@@ -219,7 +220,7 @@ nav > div .icon-container {
 }
 
 nav > div .icon-container > div {
-  background: url(../img/icon_trans_cut.png);
+  background: url(../img/icon_trans_cut-80x80.png);
   background-size: contain;
   background-repeat: no-repeat;
   display: block;
@@ -227,44 +228,27 @@ nav > div .icon-container > div {
 }
 
 nav > div .icon-container > p {
+  background: url(../img/icon_trans_cut-blue-80x80.png);
+  background-size: 0;
   font-weight: 700;
+  text-transform: uppercase;
   letter-spacing: 2px;
   margin: 0 0 0 10px;
 }
 
 nav > div .icon-container:hover {
+  border-top: 4px solid #fff;
   border-bottom: 4px solid #223D6E;
-  padding: 5px 0 1px 0;
 }
 
 nav > div .icon-container:hover > div {
-  background: url(../img/icon_trans_cut-blue.png);
+  background: url(../img/icon_trans_cut-blue-80x80.png);
   background-size: contain;
   background-repeat: no-repeat;
 }
 
 nav > div .icon-container:hover > p {
   color: #223D6E;
-}
-
-nav > div .middle-text-container {
-  display: none;
-  position: absolute;
-  height: 60px;
-  text-align: center;
-  right: calc( 50vw - 185px);
-}
-
-@media (min-width: 880px) {
-  nav > div .middle-text-container {
-    display: block;
-    width: 300px;
-  }
-}
-
-nav > div .middle-text-container > p {
-  margin: 20px 0 0 0;
-  width: auto;
 }
 
 nav > div .navbar-toggle {
@@ -277,12 +261,19 @@ nav > div .navbar-toggle {
   }
 }
 
+@media (min-width: 1000px) {
+  nav > div .navbar-toggle {
+    display: none;
+  }
+}
+
 nav > div .navbar-toggle > a {
   float: right;
   width: 40px;
   height: 60px;
   letter-spacing: 2px;
   font-size: 0;
+  text-transform: uppercase;
   margin: 0 15px 0 0;
 }
 
@@ -341,17 +332,26 @@ nav .main-nav {
   background-color: rgba(0, 0, 0, 0.5);
 }
 
-@media (min-width: 880px) {
+@media (min-width: 1000px) {
   nav .main-nav {
-    width: 420px;
+    position: fixed;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+    -webkit-box-pack: end;
+        -ms-flex-pack: end;
+            justify-content: flex-end;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
     height: auto;
-    border-left: 2px solid #223D6E;
-  }
-}
-
-@media (min-width: 1440px) {
-  nav .main-nav {
-    border-right: 2px solid #223D6E;
+    width: auto;
+    right: 0;
+    top: 40px;
+    border: 0;
+    background-color: #fff;
   }
 }
 
@@ -360,14 +360,47 @@ nav .main-nav.visible {
 }
 
 nav .main-nav > li {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
   padding: 15px 25px;
   background-color: #fff;
   border-bottom: 2px solid #223d6e;
+  text-transform: uppercase;
+}
+
+@media (min-width: 1000px) {
+  nav .main-nav > li {
+    text-transform: none;
+    font-size: 15px;
+    height: 60px;
+    padding: 20px 10px;
+    border-bottom: 2px solid #223d6e;
+    border-top: 2px solid #fff;
+  }
+}
+
+@media (min-width: 1200px) {
+  nav .main-nav > li {
+    padding: 20px 15px;
+  }
 }
 
 nav .main-nav > li:hover {
   color: #FFF;
   background-color: #223d6ee0;
+}
+
+@media (min-width: 1000px) {
+  nav .main-nav > li:hover {
+    background-color: transparent;
+    color: #223D6E;
+    border-bottom: 4px solid #223d6e;
+    border-top: 4px solid #fff;
+  }
 }
 
 .parallax-container {
@@ -378,8 +411,8 @@ nav .main-nav > li:hover {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  background: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.3)), to(rgba(0, 0, 0, 0.3))), url(../img/parallax.jpg);
-  background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(../img/parallax.jpg);
+  background: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.3)), to(rgba(0, 0, 0, 0.3))), url(../img/parallax-min.jpg);
+  background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(../img/parallax-min.jpg);
   height: 500px;
   background-repeat: no-repeat;
   background-size: cover;
@@ -426,7 +459,7 @@ nav .main-nav > li:hover {
 
 @media (min-width: 880px) {
   .parallax-container > div:nth-child(1) > p:nth-child(1) {
-    font-size: 35px;
+    font-size: 32px;
   }
 }
 
@@ -448,16 +481,15 @@ nav .main-nav > li:hover {
 
 .parallax-container > div:nth-child(1) > p:nth-child(3) {
   color: #e7e7e7;
-  font-size: 25px;
   font-weight: bold;
   margin: 0 0 30px 0;
-  font-size: 25px;
+  font-size: 22px;
 }
 
 @media (min-width: 880px) {
   .parallax-container > div:nth-child(1) > p:nth-child(3) {
     margin: 0 0 40px 0;
-    font-size: 50px;
+    font-size: 45px;
   }
 }
 
@@ -536,7 +568,7 @@ nav .main-nav > li:hover {
   bottom: 0;
 }
 
-@media (min-width: 880px) {
+@media (min-width: 1000px) {
   .parallax-container .circle {
     display: -webkit-box;
     display: -ms-flexbox;
@@ -559,12 +591,10 @@ nav .main-nav > li:hover {
   border-radius: 50%;
   background-color: rgba(0, 0, 0, 0.3);
   border: 4px solid #FFF;
-  -webkit-transform: scale(0.4);
-          transform: scale(0.4);
   overflow: hidden;
 }
 
-@media (min-width: 900px) {
+@media (min-width: 1000px) {
   .parallax-container .circle > span {
     -webkit-transform: scale(0.5);
             transform: scale(0.5);
@@ -842,24 +872,39 @@ nav .main-nav > li:hover {
 }
 
 .thumbnail-container > div:nth-child(1) {
-  background: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.4)), to(rgba(0, 0, 0, 0.4))), url(../img/shooter-min.jpg);
-  background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(../img/shooter-min.jpg);
+  background: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.3)), to(rgba(0, 0, 0, 0.3))), url(../img/shooter-1200x1000-min.jpg);
+  background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(../img/shooter-1200x1000-min.jpg);
   background-size: cover;
   background-position: center;
+  background-color: #2b2f28;
+}
+
+.thumbnail-container > div:nth-child(1).lazy {
+  background: none;
 }
 
 .thumbnail-container > div:nth-child(2) {
-  background: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.4)), to(rgba(0, 0, 0, 0.4))), url(../img/hunter-min.jpg);
-  background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(../img/hunter-min.jpg);
+  background: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.3)), to(rgba(0, 0, 0, 0.3))), url(../img/hunter-1200x1000-min.jpg);
+  background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(../img/hunter-1200x1000-min.jpg);
   background-size: cover;
   background-position: center;
+  background-color: #44413f;
+}
+
+.thumbnail-container > div:nth-child(2).lazy {
+  background: none;
 }
 
 .thumbnail-container > div:nth-child(3) {
-  background: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.4)), to(rgba(0, 0, 0, 0.4))), url(../img/forest_sun-min.jpg);
-  background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(../img/forest_sun-min.jpg);
+  background: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.3)), to(rgba(0, 0, 0, 0.3))), url(../img/forest_sun-1200x1440-min.jpg);
+  background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(../img/forest_sun-1200x1440-min.jpg);
   background-size: cover;
   background-position: center;
+  background-color: #ccc9a2;
+}
+
+.thumbnail-container > div:nth-child(3).lazy {
+  background: none;
 }
 
 .circle-arrow-thumbnail {
@@ -1052,8 +1097,8 @@ nav .main-nav > li:hover {
 }
 
 .article-1 > div:nth-child(1) {
-  background: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.3)), to(rgba(0, 0, 0, 0.3))), url(../img/shooter-blur-min.jpg);
-  background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(../img/shooter-blur-min.jpg);
+  background: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.3)), to(rgba(0, 0, 0, 0.3))), url(../img/shooter-1200x1000-min.jpg);
+  background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(../img/shooter-1200x1000-min.jpg);
   background-size: cover;
   background-position: center;
   height: 400px;
@@ -1065,8 +1110,8 @@ nav .main-nav > li:hover {
 }
 
 .article-2 > div:nth-child(1) {
-  background: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.3)), to(rgba(0, 0, 0, 0.3))), url(../img/hunter-blur-min.jpg);
-  background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(../img/hunter-blur-min.jpg);
+  background: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.3)), to(rgba(0, 0, 0, 0.3))), url(../img/hunter-1200x1000-min.jpg);
+  background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(../img/hunter-1200x1000-min.jpg);
   background-size: cover;
   background-position: center;
   height: 400px;
@@ -1084,8 +1129,8 @@ nav .main-nav > li:hover {
 }
 
 .article-3 > div:nth-child(1) {
-  background: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.4)), to(rgba(0, 0, 0, 0.4))), url(../img/forest_sun-blur-min.jpg);
-  background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(../img/forest_sun-blur-min.jpg);
+  background: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.4)), to(rgba(0, 0, 0, 0.4))), url(../img/forest_sun-1200x1440-min.jpg);
+  background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(../img/forest_sun-1200x1440-min.jpg);
   background-size: cover;
   background-position: center;
   height: 300px;
@@ -1153,8 +1198,8 @@ nav .main-nav > li:hover {
 }
 
 .article-3 > div:nth-child(2) > div:nth-child(1) {
-  background: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.8)), to(rgba(0, 0, 0, 0.8))), url(../img/pig-blur-min.jpg);
-  background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(../img/pig-blur-min.jpg);
+  background: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.8)), to(rgba(0, 0, 0, 0.8))), url(../img/pig-900x600-min.jpg);
+  background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(../img/pig-900x600-min.jpg);
   background-size: cover;
   background-position: center;
   margin: 5px 0 0 0;
@@ -1172,8 +1217,8 @@ nav .main-nav > li:hover {
 }
 
 .article-3 > div:nth-child(2) > div:nth-child(2) {
-  background: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.8)), to(rgba(0, 0, 0, 0.8))), url(../img/deer-blur-min.jpg);
-  background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(../img/deer-blur-min.jpg);
+  background: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.8)), to(rgba(0, 0, 0, 0.8))), url(../img/deer-900x600-min.jpg);
+  background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(../img/deer-900x600-min.jpg);
   background-size: cover;
   background-position: center;
   margin: 5px 0 0 0;
@@ -1191,8 +1236,8 @@ nav .main-nav > li:hover {
 }
 
 .article-3 > div:nth-child(2) > div:nth-child(3) {
-  background: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.8)), to(rgba(0, 0, 0, 0.8))), url(../img/deer_small-blur-min.jpg);
-  background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(../img/deer_small-blur-min.jpg);
+  background: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.8)), to(rgba(0, 0, 0, 0.8))), url(../img/deer_small-900x600-min.jpg);
+  background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(../img/deer_small-900x600-min.jpg);
   background-size: cover;
   background-position: center;
   margin: 5px 0 0 0;
@@ -1210,8 +1255,8 @@ nav .main-nav > li:hover {
 }
 
 .article-3 > div:nth-child(3) {
-  background: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.8)), to(rgba(0, 0, 0, 0.8))), url(../img/forest-blur-min.jpg);
-  background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(../img/forest-blur-min.jpg);
+  background: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.8)), to(rgba(0, 0, 0, 0.8))), url(../img/forest-900x600-min.jpg);
+  background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(../img/forest-900x600-min.jpg);
   background-size: cover;
   background-position: center;
   width: 100%;
@@ -1256,8 +1301,8 @@ nav .main-nav > li:hover {
   z-index: 2;
   max-width: 1000px !important;
   padding: 0 0 120px 0;
-  background: -webkit-gradient(linear, left top, left bottom, from(rgba(10, 19, 34, 0.8)), to(rgba(10, 19, 34, 0.8))), url(../img/trees-high.jpg);
-  background: linear-gradient(rgba(10, 19, 34, 0.8), rgba(10, 19, 34, 0.8)), url(../img/trees-high.jpg);
+  background: -webkit-gradient(linear, left top, left bottom, from(rgba(10, 19, 34, 0.8)), to(rgba(10, 19, 34, 0.8))), url(../img/trees-750x500-min.jpg);
+  background: linear-gradient(rgba(10, 19, 34, 0.8), rgba(10, 19, 34, 0.8)), url(../img/trees-750x500-min.jpg);
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
@@ -1320,8 +1365,8 @@ nav .main-nav > li:hover {
   width: 100%;
   max-width: 720px;
   height: 100%;
-  background: -webkit-gradient(linear, left top, left bottom, from(rgba(10, 19, 34, 0.8)), to(rgba(10, 19, 34, 0.8))), url(../img/trees-high.jpg);
-  background: linear-gradient(rgba(10, 19, 34, 0.8), rgba(10, 19, 34, 0.8)), url(../img/trees-high.jpg);
+  background: -webkit-gradient(linear, left top, left bottom, from(rgba(10, 19, 34, 0.8)), to(rgba(10, 19, 34, 0.8))), url(../img/trees-750x500-min.jpg);
+  background: linear-gradient(rgba(10, 19, 34, 0.8), rgba(10, 19, 34, 0.8)), url(../img/trees-750x500-min.jpg);
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
@@ -1362,21 +1407,29 @@ nav .main-nav > li:hover {
 }
 
 .form > div:nth-child(2) {
-  margin: 80px 0 0 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
   background-color: #fff;
+  margin: 80px 0 0 0;
+  max-width: 500px;
 }
 
 @media (min-width: 880px) {
   .form > div:nth-child(2) {
-    margin: 0 0 0 0;
+    display: block;
+    margin: 0;
     background-color: transparent;
     padding: 30px;
+    max-width: auto;
   }
 }
 
 .form > div:nth-child(2) > div {
   display: block;
-  margin: 0 30px;
+  margin: 15px 30px 0 30px;
 }
 
 @media (min-width: 880px) {
@@ -1386,24 +1439,19 @@ nav .main-nav > li:hover {
   }
 }
 
-.form > div:nth-child(2) > div h1, .form > div:nth-child(2) > div p {
-  min-width: 100%;
-}
-
-.form > div:nth-child(2) > div > h1 {
-  margin: 0 0 5px 0;
-  font-size: 35px;
-  color: #223D6E;
-  text-transform: uppercase;
-}
-
-.form > div:nth-child(2) > div > p {
-  font-size: 20px;
-  color: #223d6edc;
+.form > div:nth-child(2) > div > p:nth-child(1) {
+  font-size: 25px;
+  font-weight: bold;
+  color: #223d6e;
   margin: 0 0 10px 0;
 }
 
-.form > div:nth-child(2) > div > p i {
+.form > div:nth-child(2) > div > p:nth-child(2) {
+  font-size: 20px;
+  color: #223d6ee1;
+}
+
+.form > div:nth-child(2) > div > p:nth-child(2) i {
   padding: 0 5px 0 0;
   color: #3a4c6e;
 }
@@ -1411,10 +1459,11 @@ nav .main-nav > li:hover {
 .form > div:nth-child(2) > form {
   z-index: 2;
   position: relative;
-  min-width: 250px;
-  max-width: 500px;
-  background-color: #fff;
+  min-width: 100%;
   padding: 40px 25px 25px 25px;
+  background-color: #FFF;
+  -webkit-transition: .3s;
+  transition: .3s;
 }
 
 @media (min-width: 880px) {
@@ -1570,12 +1619,17 @@ nav .main-nav > li:hover {
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
-  padding: 10px 60px;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: 10px 50px;
   border-radius: 5px;
   color: #fff;
   background-color: #223d6ef3;
   font-size: 15px;
   margin: 10px 0 0 0;
+  -webkit-transition: 0;
+  transition: 0;
 }
 
 @media (min-width: 880px) {
@@ -1602,7 +1656,6 @@ nav .main-nav > li:hover {
   display: none;
   position: absolute;
   width: 75px;
-  background-color: #28a745;
 }
 
 .form > div:nth-child(2) > form.success > button {
@@ -1611,8 +1664,20 @@ nav .main-nav > li:hover {
   border: 0;
 }
 
-.form > div:nth-child(2) > form.success > button i {
+.form > div:nth-child(2) > form.success > button > i:nth-child(1) {
   display: block;
+  background-color: #28a745;
+}
+
+.form > div:nth-child(2) > form.error > button {
+  color: #ffffff;
+  background-color: #dc3545;
+  border: 0;
+}
+
+.form > div:nth-child(2) > form.error > button > i:nth-child(2) {
+  display: block;
+  background-color: #dc3545;
 }
 
 .bottom-bar {

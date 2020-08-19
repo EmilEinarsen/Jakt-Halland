@@ -28,7 +28,6 @@ nav
 	background-color: #fff
 	border-bottom: 2px solid #223D6E
 	font-size: 20px
-	text-transform: uppercase
 		
 	& > div
 		@extend .wrapper
@@ -41,8 +40,10 @@ nav
 			display: flex
 			justify-content: center
 			align-items: center
-			padding: 10px 0
-			margin: 0 0 0 15px
+			margin: 0 0 1px 15px
+			border-top: 2px solid #fff
+			border-bottom: 2px solid #223D6E
+			height: 60px
 			@media (min-width: 400px)
 				margin: 0 0 0 25px
 			
@@ -50,48 +51,38 @@ nav
 				@extend .inactive-link
 
 			& > div
-				background: url(../img/icon_trans_cut.png)
+				background: url(../img/icon_trans_cut-80x80.png)
 				background-size: contain
 				background-repeat: no-repeat
 				display: block
 				padding: 20px
 			
 			& > p
+				background: url(../img/icon_trans_cut-blue-80x80.png)
+				background-size: 0
 				@extend .no-wrap
 				font-weight: 700
+				text-transform: uppercase
 				letter-spacing: 2px
 				margin: 0 0 0 10px
 			
 			&:hover
+				border-top: 4px solid #fff
 				border-bottom: 4px solid #223D6E
-				padding: 5px 0 1px 0
 				& > div
-					background: url(../img/icon_trans_cut-blue.png)
+					background: url(../img/icon_trans_cut-blue-80x80.png)
 					background-size: contain
 					background-repeat: no-repeat
 				& > p
 					color: #223D6E
-				
-
-		.middle-text-container
-			display: none
-			position: absolute
-			height: 60px
-			text-align: center
-			right: calc( 50vw - 185px )
-			@include desktop
-				display: block
-				width: 300px
-
-			& > p
-				margin: 20px 0 0 0
-				width: auto
 
 		.navbar-toggle
 			@extend .disable-higlight
 			height: 60px
 			@include desktop
 				width: 300px
+			@media (min-width: 1000px)
+				display: none
 			
 			& > a
 				@extend .pointer
@@ -100,6 +91,7 @@ nav
 				height: 60px
 				letter-spacing: 2px;
 				font-size: 0
+				text-transform: uppercase
 				margin: 0 15px 0 0
 				@media (min-width: 400px)
 					margin: 0 25px 0 0
@@ -142,22 +134,39 @@ nav
 		color: #223D6E
 		background-color: rgba(0, 0, 0, 0.5)
 
-		@include desktop
-			width: 420px
+		@media (min-width: 1000px)
+			position: fixed
+			display: flex
+			flex-wrap: wrap
+			justify-content: flex-end
+			align-items: center
 			height: auto
-			border-left: 2px solid #223D6E
-
-		@media (min-width: 1440px)
-			border-right: 2px solid #223D6E
+			width: auto
+			right: 0
+			top: 40px
+			border: 0
+			background-color: #fff
 			
 
 		&.visible
 			display: block
 
 		& > li
+			display: flex
+			align-items: center
 			padding: 15px 25px
 			background-color: #fff
 			border-bottom: 2px solid #223d6e
+			text-transform: uppercase
+			@media (min-width: 1000px)
+				text-transform: none
+				font-size: 15px
+				height: 60px
+				padding: 20px 10px
+				border-bottom: 2px solid #223d6e
+				border-top: 2px solid #fff
+			@media (min-width: 1200px)
+				padding: 20px 15px
 
 			& > a 
 				@extend .inactive-link
@@ -166,6 +175,11 @@ nav
 				@extend .pointer
 				color: #FFF
 				background-color: #223d6ee0
+				@media (min-width: 1000px)
+					background-color: transparent
+					color: #223D6E
+					border-bottom: 4px solid #223d6e
+					border-top: 4px solid #fff
 
 
 		

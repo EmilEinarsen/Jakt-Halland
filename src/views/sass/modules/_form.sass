@@ -6,7 +6,7 @@
 	z-index: 2
 	max-width: 1000px !important
 	padding: 0 0 120px 0
-	background: linear-gradient( rgba(#0a1322, 0.8), rgba(#0a1322, 0.8) ), url(../img/trees-high.jpg)
+	background: linear-gradient( rgba(#0a1322, 0.8), rgba(#0a1322, 0.8) ), url(../img/trees-750x500-min.jpg)
 	background-size: cover
 	background-position: center center
 	background-repeat: no-repeat
@@ -40,7 +40,7 @@
 			width: 100%
 			max-width: 720px
 			height: 100%
-			background: linear-gradient( rgba(#0a1322, 0.8), rgba(#0a1322, 0.8) ), url(../img/trees-high.jpg)
+			background: linear-gradient( rgba(#0a1322, 0.8), rgba(#0a1322, 0.8) ), url(../img/trees-750x500-min.jpg)
 			background-size: cover
 			background-position: center center
 			background-repeat: no-repeat
@@ -67,29 +67,32 @@
 						color: #3a4c6e
 
 	& > div:nth-child(2)
-		margin: 80px 0 0 0
+		display: flex
+		flex-wrap: wrap
 		background-color: #fff
+		margin: 80px 0 0 0
+		max-width: 500px
 		@include desktop
-			margin: 0 0 0 0
+			display: block
+			margin: 0
 			background-color: transparent
 			padding: 30px
+			max-width: auto
 		& > div
 			display: block
-			margin: 0 30px
+			margin: 15px 30px 0 30px
 			@include desktop
 				display: none
 				margin: 0 0 60px 0
-			h1, p
-				min-width: 100%
-			& > h1
-				margin: 0 0 5px 0
-				font-size: 35px
-				color: #223D6E
-				text-transform: uppercase
-			& > p
-				font-size: 20px
-				color: #223d6edc
+
+			& > p:nth-child(1)
+				font-size: 25px
+				font-weight: bold
+				color: #223d6e
 				margin: 0 0 10px 0
+			& > p:nth-child(2)
+				font-size: 20px
+				color: #223d6ee1
 				i
 					padding: 0 5px 0 0
 					color: #3a4c6e
@@ -97,10 +100,9 @@
 		& > form
 			z-index: 2
 			position: relative
-			min-width: 250px
-			max-width: 500px
-			background-color: #fff
+			min-width: 100%
 			padding: 40px 25px 25px 25px
+			background-color: #FFF
 			transition: .3s
 			@include desktop
 				display: flex
@@ -218,13 +220,14 @@
 			& > button
 				display: flex
 				justify-content: center
-				padding: 10px 60px
+				align-items: center
+				padding: 10px 50px
 				border-radius: 5px
 				color: #fff
 				background-color: #223d6ef3
 				font-size: 15px
 				margin: 10px 0 0 0
-				transition: .1s
+				transition: 0
 				@include desktop
 					color: #223D6E
 					border: 2px solid #223D6E
@@ -241,12 +244,20 @@
 					display: none
 					position: absolute
 					width: 75px
-					background-color: #28a745
 
 			&.success
 				& > button
 					color: #ffffff
 					background-color: #28a745
 					border: 0
-					i
+					& > i:nth-child(1)
 						display: block
+						background-color: #28a745
+			&.error
+				& > button
+					color: #ffffff
+					background-color: #dc3545
+					border: 0
+					& > i:nth-child(2)
+						display: block
+						background-color: #dc3545

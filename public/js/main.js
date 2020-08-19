@@ -20,6 +20,7 @@ let months = ["Januari", "Februari", "Mars", "April", "Maj", "Juni",
 
 document.addEventListener("DOMContentLoaded", () => {
 	announce.events()
+	lazyload.load()
 	document.addEventListener("scroll", lazyload.load)
 	window.addEventListener("resize", lazyload.load)
 	window.addEventListener("orientationChange", lazyload.load)
@@ -58,11 +59,17 @@ document.addEventListener("click", e => {
 })
 queryTarget("#form").addEventListener("submit", e => {
 	e.preventDefault()
-	form.requestMailing(e)
+	if(validate.isFormAnnouncingError()) return page.removeButtonError()
+	if(validate.isFormAnnouncingSuccess()) {
+		page.removeSuccess()
+		page.resetTextareaHeight()
+		tools.cancelThrottle()
+	} else form.requestMailing(e)
 })
 queryTarget("#form").addEventListener("input", e => { 
-	if(targetId(e) === "message") page.resizeTextareaToFitContent(e); 
-	validate.isFormValid(e) })
+	if(targetId(e) === "message") page.resizeTextareaToFitContent(e)
+	validate.isFormValid(e) 
+})
 
 
 function Scroll() {
@@ -168,7 +175,6 @@ function Page() {
 		else setTextareaHeight('')
 	}
 	setTextareaHeight = valueInPx => queryTarget('#message').style.height = valueInPx
-
 	
 	this.formFeedback = errorMessages => {
 		for(let key in errorMessages)
@@ -191,7 +197,9 @@ function Page() {
 		page.addInnerOf(`#${key}Feedback`, ``)
 		queryTarget(`#${key}`).parentElement.classList.remove('error')
 	}
-	this.toggleButtonSuccess = () => queryTarget('form').classList.toggle('success')
+	this.addButtonSuccess = () => queryTarget('form').classList.add('success')
+	this.addButtonError = () => queryTarget('form').classList.add('error')
+	this.removeButtonError = () => queryTarget('form').classList.remove('error')
 	this.toggleInputFocus = (e) => {
 		if(!e) return [...queryTargetAll(".focus")].map(input => input.classList.remove("focus"))
 		if(e.target.value) return
@@ -209,9 +217,9 @@ function Announce() {
 		page.addInnerOf('#leadershipEventDates', `Nästa kurstillfälle är den ${leader}.`)
 	}
 	this.formSubmissionSuccess = () => {
-		page.toggleButtonSuccess()
+		page.addButtonSuccess()
 		form.reset()
-		tools.throttle(() => {
+		tools.throttle(function() {
 			page.removeSuccess()
 			page.resetTextareaHeight()
 		}, 3000)
@@ -273,7 +281,7 @@ function Sort() {
 				}
 			})
 			.sort((eventA, eventB) => {
-				return validate.compareDates(
+				return tools.compareDates(
 					tools.dateStringIntoIntObject(eventA.info.startDate), 
 					tools.dateStringIntoIntObject(eventB.info.startDate)
 				)
@@ -281,32 +289,27 @@ function Sort() {
 		}
 	}
 	this.sortDataByEvent = () => {
-		return [...server.data.events].reduce(([intensive, leader, calm, weekend, other], event) => {
-			return (
+		return [...server.data.events].reduce(([intensive, leader, calm, weekend, other], event) => (
 				event.event === "Jägarexamen (Intensiv)" ? [[...intensive, event], leader, calm, weekend, other]
-				: event.event === "Jaktledarutbildning" ? [intensive, [...leader, event], calm, weekend, other]
-				: event.event === "Jägarexamen (Lugn)" ? [intensive, leader, [...calm, event], weekend, other]
-				: event.event === "Jakt helg" ? [intensive, leader, calm, [...weekend, event], other]
-				: [intensive, leader, calm, weekend, [...other, event]]
-			)
-		}, [[], [], [], [], []])
+					: event.event === "Jaktledarutbildning" ? [intensive, [...leader, event], calm, weekend, other]
+						: event.event === "Jägarexamen (Lugn)" ? [intensive, leader, [...calm, event], weekend, other]
+							: event.event === "Jakt helg" ? [intensive, leader, calm, [...weekend, event], other]
+								: [intensive, leader, calm, weekend, [...other, event]]
+			), [[], [], [], [], []]
+		)
 	}
 }
 
 function Validate() {
 	this.isWidthMobile = () => tools.getScreenWidth() < 880
 	this.isInWindow = param => param.offsetTop < (window.innerHeight + window.pageYOffset)
-
+	this.isFormAnnouncingSuccess = () => queryTarget('form').classList.contains('success')
+	this.isFormAnnouncingError = () => queryTarget('form').classList.contains('error')
 	this.isScrollingDisabled = () => queryTarget('body').classList.contains('stop-scrolling')
 	this.isMenuVisible = () => queryTarget('.main-nav').classList.contains('visible')
-
-	this.compareDates = (dateA, dateB) => {
-		const scoreOfDate = (dateA.year*365 + dateA.month * 31 + dateA.date) - (dateB.year*365 + dateB.month * 31 + dateB.date)
-		return scoreOfDate === 0 ? 0 : scoreOfDate < 0 ? -1 : 1 
-		// 0 = now, -1 = future, 1 = past
-	}
+	
 	this.isEventInFuture = eventStart => {
-		const comparedDates = validate.compareDates(
+		const comparedDates = tools.compareDates(
 			tools.getDate(), 
 			tools.dateStringIntoIntObject(eventStart)
 		)
@@ -339,7 +342,11 @@ function Validate() {
 				page.formFeedback({[key]: errorMessages[key]})
 			}
 			for(let key in inputContent)
-				if(errorMessages[key]) return false
+				if(errorMessages[key]) {
+					page.addButtonError()
+					tools.throttle(page.removeButtonError, 3000)
+					return false
+				}
 			return true
 		}
 	}
@@ -394,8 +401,13 @@ function Tools() {
 
 	this.stringToInt = string => parseInt(string)
 
+	this.compareDates = (dateA, dateB) => {
+		const scoreOfDate = (dateA.year*365 + dateA.month * 31 + dateA.date) - (dateB.year*365 + dateB.month * 31 + dateB.date)
+		return scoreOfDate === 0 ? 0 : scoreOfDate < 0 ? -1 : 1 
+		// 0 = now, -1 = future, 1 = past
+	}
+
 	this.produceDateString = event => {
-		console.log(event)
 		return combineDatesBasedOnMonthAndDate(
 			this.dateStringIntoIntObject(event.info.startDate),
 			this.dateStringIntoIntObject(event.info.endDate)
@@ -405,8 +417,8 @@ function Tools() {
 		const startMonth = this.numberToMonth(startDate.month)
 		if(startDate.month === endDate.month)
 			return startDate.date === endDate.date ? `${startDate.date} ${startMonth}` 
-			: `${startDate.date} - ${endDate.date} ${startMonth}`
-		else return `${startDate.date} ${startMonth} -${endDate.date} ${this.numberToMonth(endDate.month)}`
+			: `${startDate.date}-${endDate.date} ${startMonth}`
+		else return `${startDate.date} ${startMonth}-${endDate.date} ${this.numberToMonth(endDate.month)}`
 	}
 	this.structureApprouchingEvents = ([intensive, leader]) => [
 		intensive.length === 1 ? tools.produceDateString(intensive[0]) 
