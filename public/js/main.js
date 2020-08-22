@@ -8,36 +8,26 @@ const validate = new Validate()
 const announce = new Announce()
 const sort = new Sort()
 const scroll = new Scroll()
-const menu = new Menu()
+let menu
 const page = new Page()
 const date = new Date()
 const server = new Server()
-let form = new Form()
-let lazyload = new Lazyload()
-let months = ["Januari", "Februari", "Mars", "April", "Maj", "Juni", 
+const form = new Form()
+const lazyload = new Lazyload()
+const months = ["Januari", "Februari", "Mars", "April", "Maj", "Juni", 
 "Juli", "Augusti", "September", "Oktober", "November", "December"]
+const formInputs = [...queryTargetAll('input'), queryTarget('textarea')]
 
-
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", e => {
+	tools.setDOMContentLoadedTimeStamp(e)
+	menu = new Menu()
 	announce.events()
 	lazyload.load()
-	document.addEventListener("scroll", lazyload.load)
-	window.addEventListener("resize", lazyload.load)
-	window.addEventListener("orientationChange", lazyload.load)
-	const inputs = [...queryTargetAll('input'), queryTarget('textarea')]
-	inputs.map(input => input.addEventListener("focus", e => {
-		page.toggleInputFocus(e)
-	}))
-	inputs.map(input => input.addEventListener("blur", e => {
-		const id = targetId(e)
-		page.toggleInputFocus(e)
-		validate.isInputValid(e.target.value, id) ? page.inputSuccess(id): page.removeSuccess(id)
-		page.resizeTextareaToFitContent(e)
-	}))
 })
 
 document.addEventListener("click", e => { 
-	const id = targetId(e) 
+	const id = targetId(e)
+	tools.setLastClickTimeStamp(e)
 
 	parentId(e) === 'btnMenu' ? menu.toggleMenu() : menu.closeMenu()
 
@@ -70,14 +60,33 @@ queryTarget("#form").addEventListener("input", e => {
 	if(targetId(e) === "message") page.resizeTextareaToFitContent(e)
 	validate.isFormValid(e) 
 })
+window.addEventListener("scroll", e => tools.throttle(
+	function() {
+		lazyload.load()
+		console.log(scroll.getPositionY())
+		if((e.timeStamp- tools.lastClickTimeStamp)>30) menu.toggleNavbarVisiblity(e)
+		if(scroll.getPositionY() < 40) menu.addNavbarVisible()
+	}, 20)
+)
+window.addEventListener("resize", lazyload.load)
+window.addEventListener("orientationChange", lazyload.load)
+formInputs.map(input => input.addEventListener("focus", e => page.toggleInputFocus(e)))
+formInputs.map(input => input.addEventListener("blur", e => {
+	const id = targetId(e)
+	page.toggleInputFocus(e)
+	validate.isInputValid(e.target.value, id) ? page.inputSuccess(id): page.removeSuccess(id)
+	page.resizeTextareaToFitContent(e)
+}))
 
 
 function Scroll() {
 	let y
-	getPositionY = () => window.scrollY
+	let oldScroll
+	this.setOldScroll = () => oldScroll = this.getPositionY()
+	this.getPositionY = () => window.scrollY
 
 	this.disableScroll = () => {
-		y = getPositionY()
+		y = this.getPositionY()
 		page.setVerticlePositionOfBody(y)
 		queryTarget('body').classList.add('stop-scrolling')
 	}
@@ -87,16 +96,23 @@ function Scroll() {
 		queryTarget('body').classList.remove('stop-scrolling')
 		this.scrollToInstantly({top: y})
 	}
+	this.direction = () => {
+		const scrollingUp = oldScroll > this.getPositionY()
+		this.setOldScroll()
+		return scrollingUp
+	}
 
 	this.keepYPosition = func => {
-		y = getPositionY()
+		y = this.getPositionY()
 		func()
 		this.scrollToInstantly({top: y})
 	}
 
 	this.scrollToParameter = (param) => {
+		validate.setIsScrollingManual(false)
+		console.log('e')
 		const yOffset = -120
-		const y = queryTarget(param).getBoundingClientRect().top + window.pageYOffset + yOffset
+		let y = queryTarget(param).getBoundingClientRect().top + window.pageYOffset + yOffset
 		window.scrollTo({top: y, behavior: 'smooth'})
 	}
 	this.scrollToTop = () => window.scrollTo({top: 0, behavior: 'smooth'})
@@ -106,26 +122,36 @@ function Scroll() {
 
 
 function Menu() {
+	const menuBtn = () => queryTarget('.navbar-toggle')
+	const nav = () => queryTarget('.main-nav')
+	const navbar = () => [queryTarget('nav'), queryTarget('.top-bar')]
+	
 	this.toggleMenu = () => {
-		queryTarget('.main-nav').classList.toggle('visible')
+		nav().classList.toggle('visible')
 		if(validate.isWidthMobile()) 
 			validate.isMenuVisible() ? scroll.disableScroll() : scroll.enableScroll()
-		queryTarget('.navbar-toggle').classList.toggle('open')
+		menuBtn().classList.toggle('open')
 	}
 	this.closeMenu = () => {
 		scroll.enableScroll()
 		if(!validate.isMenuVisible()) return
-		queryTarget('.main-nav').classList.remove('visible')
-		queryTarget('.navbar-toggle').classList.remove('open')
+		nav().classList.remove('visible')
+		menuBtn().classList.remove('open')
 	}
+	this.toggleNavbarVisiblity = e => {
+		if(!validate.shouldNavbarVisibiltyToggle(e)) return
+		let isScrollingUp = scroll.direction()
+		this.closeMenu()
+		isScrollingUp ? this.addNavbarVisible() : this.removeNavbarVisible()
+	}
+	this.removeNavbarVisible = () => navbar().map(e => e.classList.remove('visible'))
+	this.addNavbarVisible = () => navbar().map(e => e.classList.add('visible'))
 }
 
 
 function Form() {
 	const xhr = new XMLHttpRequest()
-	this.requestMailing = e => {
-		if(validate.isFormValid(e)) attemptDispatch()
-	}
+	this.requestMailing = e => validate.isFormValid(e) ? attemptDispatch() : ''
 	attemptDispatch = () => {
 		xhr.open(queryTarget("#form").method, queryTarget("#form").action)
 		xhr.setRequestHeader("Accept", "application/json")
@@ -302,11 +328,19 @@ function Sort() {
 
 function Validate() {
 	this.isWidthMobile = () => tools.getScreenWidth() < 880
-	this.isInWindow = param => param.offsetTop < (window.innerHeight + window.pageYOffset)
+	this.isInWindow = querytarget => querytarget.offsetTop < (window.innerHeight + window.pageYOffset)
 	this.isFormAnnouncingSuccess = () => queryTarget('form').classList.contains('success')
 	this.isFormAnnouncingError = () => queryTarget('form').classList.contains('error')
 	this.isScrollingDisabled = () => queryTarget('body').classList.contains('stop-scrolling')
 	this.isMenuVisible = () => queryTarget('.main-nav').classList.contains('visible')
+	let isScrollingManual = true
+	this.setIsScrollingManual = bool => isScrollingManual = bool
+
+	this.shouldNavbarVisibiltyToggle = e => {
+		if(isScrollingManual && e.timeStamp - tools.DOMContentLoadedTimeStamp > 0) return true
+		scroll.setOldScroll()
+		this.setIsScrollingManual(true)
+	}
 	
 	this.isEventInFuture = eventStart => {
 		const comparedDates = tools.compareDates(
@@ -329,13 +363,13 @@ function Validate() {
 			if(this.isInputValid(inputContent, id)) errorMessages[id] = ''
 			page.formFeedback({[id]: errorMessages[id]})
 		} else {
-			const input = e.target.elements
+			const el = e.target.elements
 			const inputContent = { 
-				name: input.name.value.trim(), 
-				subject: input.subject.value.trim(), 
-				email: input.email.value.trim(), 
-				message: input.message.value.trim(),
-				phone: input.phone.value.trim()
+				name: el.name.value.trim(), 
+				subject: el.subject.value.trim(), 
+				email: el.email.value.trim(), 
+				message: el.message.value.trim(),
+				phone: el.phone.value.trim()
 			}
 			for(let key in inputContent) {
 				if(this.isInputValid(inputContent[key], key)) errorMessages[key] = ''
@@ -362,7 +396,10 @@ function Validate() {
 		}
 		if(id === 'phone') {
 			if(input === '') return true
-			if(!input.match(/^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/)) return false
+			if(!(
+				input.match(/^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/) 
+				|| input.match(/^\(?[+]?([0-9]{4})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/)
+			)) return false
 		}
 		return input ? true : false
 	}
@@ -371,7 +408,10 @@ function Validate() {
 
 function Tools() {
 	let throttle
-
+	this.lastClickTimeStamp = 0
+	this.DOMContentLoadedTimeStamp
+	this.setDOMContentLoadedTimeStamp = e => this.DOMContentLoadedTimeStamp = e.timeStamp
+	this.setLastClickTimeStamp = e => this.lastClickTimeStamp = e.timeStamp
 	this.getScreenWidth = () => screen.width
 
 	this.throttle = (func, ms) => {

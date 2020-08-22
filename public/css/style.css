@@ -146,39 +146,38 @@
 }
 
 .top-bar {
-  z-index: 4;
+  display: none;
+  z-index: 5;
   position: fixed;
   top: 0;
   height: 40px;
   width: 100%;
   background-color: #223D6E;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
+}
+
+@media (min-width: 880px) {
+  .top-bar {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+  }
 }
 
 .top-bar > p {
   font-size: 15px;
   color: #fff;
-  display: none;
-}
-
-@media (min-width: 880px) {
-  .top-bar > p {
-    display: block;
-  }
 }
 
 nav {
   z-index: 4;
   position: fixed;
-  top: 40px;
+  top: 0px;
   height: 60px;
   width: 100%;
   min-width: 275px;
@@ -186,6 +185,22 @@ nav {
   background-color: #fff;
   border-bottom: 2px solid #223D6E;
   font-size: 20px;
+  -webkit-transition: margin .4s ease-in-out, opacity .5s;
+  transition: margin .4s ease-in-out, opacity .5s;
+  opacity: 0;
+  margin: -100px 0 0 0;
+  text-transform: uppercase;
+}
+
+@media (min-width: 880px) {
+  nav {
+    top: 40px;
+  }
+}
+
+nav.visible {
+  margin: 0;
+  opacity: 1;
 }
 
 nav > div {
@@ -207,7 +222,7 @@ nav > div .icon-container {
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-  margin: 0 0 1px 15px;
+  margin: 0 0 0 15px;
   border-top: 2px solid #fff;
   border-bottom: 2px solid #223D6E;
   height: 60px;
@@ -251,6 +266,26 @@ nav > div .icon-container:hover > p {
   color: #223D6E;
 }
 
+nav > div .middle-text-container {
+  display: none;
+  position: absolute;
+  height: 60px;
+  text-align: center;
+  right: calc( 50vw - 185px);
+}
+
+@media (min-width: 880px) {
+  nav > div .middle-text-container {
+    display: block;
+    width: 300px;
+  }
+}
+
+nav > div .middle-text-container > p {
+  margin: 20px 0 0 0;
+  width: auto;
+}
+
 nav > div .navbar-toggle {
   height: 60px;
 }
@@ -258,12 +293,6 @@ nav > div .navbar-toggle {
 @media (min-width: 880px) {
   nav > div .navbar-toggle {
     width: 300px;
-  }
-}
-
-@media (min-width: 1000px) {
-  nav > div .navbar-toggle {
-    display: none;
   }
 }
 
@@ -322,7 +351,16 @@ nav > div .navbar-toggle.open > :nth-child(2) {
   border-bottom: 4px solid #223D6E;
 }
 
-nav .main-nav {
+nav > div:last-child {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+}
+
+nav > div:last-child .main-nav {
   display: none;
   float: right;
   width: 100%;
@@ -332,34 +370,25 @@ nav .main-nav {
   background-color: rgba(0, 0, 0, 0.5);
 }
 
-@media (min-width: 1000px) {
-  nav .main-nav {
-    position: fixed;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-wrap: wrap;
-        flex-wrap: wrap;
-    -webkit-box-pack: end;
-        -ms-flex-pack: end;
-            justify-content: flex-end;
-    -webkit-box-align: center;
-        -ms-flex-align: center;
-            align-items: center;
+@media (min-width: 880px) {
+  nav > div:last-child .main-nav {
+    width: 330px;
     height: auto;
-    width: auto;
-    right: 0;
-    top: 40px;
-    border: 0;
-    background-color: #fff;
+    border-left: 2px solid #223D6E;
   }
 }
 
-nav .main-nav.visible {
+@media (min-width: 1440px) {
+  nav > div:last-child .main-nav {
+    border-right: 2px solid #223D6E;
+  }
+}
+
+nav > div:last-child .main-nav.visible {
   display: block;
 }
 
-nav .main-nav > li {
+nav > div:last-child .main-nav > li {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -369,38 +398,26 @@ nav .main-nav > li {
   padding: 15px 25px;
   background-color: #fff;
   border-bottom: 2px solid #223d6e;
-  text-transform: uppercase;
 }
 
 @media (min-width: 1000px) {
-  nav .main-nav > li {
-    text-transform: none;
+  nav > div:last-child .main-nav > li {
     font-size: 15px;
     height: 60px;
     padding: 20px 10px;
     border-bottom: 2px solid #223d6e;
-    border-top: 2px solid #fff;
   }
 }
 
 @media (min-width: 1200px) {
-  nav .main-nav > li {
+  nav > div:last-child .main-nav > li {
     padding: 20px 15px;
   }
 }
 
-nav .main-nav > li:hover {
+nav > div:last-child .main-nav > li:hover {
   color: #FFF;
-  background-color: #223d6ee0;
-}
-
-@media (min-width: 1000px) {
-  nav .main-nav > li:hover {
-    background-color: transparent;
-    color: #223D6E;
-    border-bottom: 4px solid #223d6e;
-    border-top: 4px solid #fff;
-  }
+  background-color: #223d6ef6;
 }
 
 .parallax-container {
@@ -413,7 +430,7 @@ nav .main-nav > li:hover {
   display: flex;
   background: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, 0.3)), to(rgba(0, 0, 0, 0.3))), url(../img/parallax-min.jpg);
   background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url(../img/parallax-min.jpg);
-  height: 500px;
+  height: 400px;
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center center;
@@ -1123,8 +1140,9 @@ nav .main-nav > li:hover {
 }
 
 .article-3 {
-  min-width: 275px !important;
-  margin: 30px auto 80px auto !important;
+  max-width: 1000px;
+  min-width: 275px;
+  margin: 30px auto 80px auto;
   color: #FFF;
 }
 
@@ -1277,7 +1295,7 @@ nav .main-nav > li:hover {
         -ms-flex: 1;
             flex: 1;
     margin: 20px auto 0 auto;
-    max-width: 800px;
+    max-width: 700px;
   }
 }
 
@@ -1669,6 +1687,14 @@ nav .main-nav > li:hover {
   background-color: #28a745;
 }
 
+.form > div:nth-child(2) > form.success > button:hover {
+  background-color: #23923d;
+}
+
+.form > div:nth-child(2) > form.success > button:hover > i:nth-child(1) {
+  background-color: #23923d;
+}
+
 .form > div:nth-child(2) > form.error > button {
   color: #ffffff;
   background-color: #dc3545;
@@ -1677,7 +1703,16 @@ nav .main-nav > li:hover {
 
 .form > div:nth-child(2) > form.error > button > i:nth-child(2) {
   display: block;
+  font-size: 25px;
   background-color: #dc3545;
+}
+
+.form > div:nth-child(2) > form.error > button:hover {
+  background-color: #d32535;
+}
+
+.form > div:nth-child(2) > form.error > button:hover > i:nth-child(2) {
+  background-color: #d32535;
 }
 
 .bottom-bar {
@@ -1735,7 +1770,7 @@ a {
   text-decoration: none;
 }
 
-.wrapper, nav > div, .parallax-container > div:nth-child(1), .article-3, .form {
+.wrapper, nav > div, .parallax-container > div:nth-child(1), .form {
   min-width: 325px;
   max-width: 1440px;
   width: 100%;
@@ -1746,7 +1781,7 @@ body {
   background-color: #f8f9fa;
 }
 
-.inactive-link, nav > div .icon-container > *, nav .main-nav > li > a, .parallax-container .circle > span > div, .thumbnail-container > div > div:nth-child(1), .circle-arrow, .circle-arrow-thumbnail, .article > div:nth-child(2) > div > div > span > i, .article-1 > div:nth-child(2) > div > div > span > i, .article-2 > div:nth-child(2) > div > div > span > i, .form > div:nth-child(2) > form label {
+.inactive-link, nav > div .icon-container > *, nav > div:last-child .main-nav > li > a, .parallax-container .circle > span > div, .thumbnail-container > div > div:nth-child(1), .circle-arrow, .circle-arrow-thumbnail, .article > div:nth-child(2) > div > div > span > i, .article-1 > div:nth-child(2) > div > div > span > i, .article-2 > div:nth-child(2) > div > div > span > i, .form > div:nth-child(2) > form label {
   pointer-events: none;
 }
 
@@ -1811,7 +1846,7 @@ body {
           filter: grayscale(20%);
 }
 
-.pointer, nav > div .icon-container, nav > div .navbar-toggle > a, nav .main-nav > li:hover, .parallax-container > div:nth-child(1) > div:nth-child(4) button, .parallax-container .circle > span, .thumbnail-container, .circle-arrow > span, .circle-arrow-thumbnail > span, .article > div:nth-child(2) > div > div > span:hover, .article-1 > div:nth-child(2) > div > div > span:hover, .article-2 > div:nth-child(2) > div > div > span:hover, .form > div:nth-child(2) > form > button:hover, .thumbnail, .thumbnail-colorshift, .gallery div img, .gallery-colorshift div img, .default-button {
+.pointer, nav > div .icon-container, nav > div .navbar-toggle > a, nav > div:last-child .main-nav > li:hover, .parallax-container > div:nth-child(1) > div:nth-child(4) button, .parallax-container .circle > span, .thumbnail-container, .circle-arrow > span, .circle-arrow-thumbnail > span, .article > div:nth-child(2) > div > div > span:hover, .article-1 > div:nth-child(2) > div > div > span:hover, .article-2 > div:nth-child(2) > div > div > span:hover, .form > div:nth-child(2) > form > button:hover, .thumbnail, .thumbnail-colorshift, .gallery div img, .gallery-colorshift div img, .default-button {
   cursor: pointer;
 }
 
@@ -1823,7 +1858,7 @@ body {
   background-color: color(hagatun-dark);
 }
 
-.disable-higlight, nav > div .icon-container, nav > div .navbar-toggle, nav .main-nav, .parallax-container > div:nth-child(1), .thumbnail-container > div > div:nth-child(1), .article > div:nth-child(2) > div > div > span, .article-1 > div:nth-child(2) > div > div > span, .article-2 > div:nth-child(2) > div > div > span {
+.disable-higlight, nav > div .icon-container, nav > div .navbar-toggle, nav > div:last-child .main-nav, .parallax-container > div:nth-child(1), .thumbnail-container > div > div:nth-child(1), .article > div:nth-child(2) > div > div > span, .article-1 > div:nth-child(2) > div > div > span, .article-2 > div:nth-child(2) > div > div > span {
   user-select: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
