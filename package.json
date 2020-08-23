@@ -89,8 +89,7 @@
     "browser-sync": "^2.26.12",
     "gulp": "^4.0.2",
     "gulp-concat": "^2.6.1",
-    "gulp-sass": "^4.1.0",
-    "gulp-useref": "^4.0.1"
+    "gulp-sass": "^4.1.0"
   },
   "scripts": {
     "watch": "gulp watch"
