@@ -60,83 +60,94 @@ queryTarget("#form").addEventListener("input", e => {
 	if(targetId(e) === "message") page.resizeTextareaToFitContent(e)
 	validate.isFormValid(e) 
 })
-window.addEventListener("scroll", e => tools.throttle(
-	function() {
+window.addEventListener("scroll", e => tools.throttle(function() {
 		lazyload.load()
-		console.log(scroll.getPositionY())
-		if((e.timeStamp- tools.lastClickTimeStamp)>30) menu.toggleNavbarVisiblity(e)
+		tools.setLastScrollTimeStamp(e)
+		if(tools.timeBetweenLastClickAndScroll()>30) menu.toggleNavbarVisiblity(e)
 		if(scroll.getPositionY() < 40) menu.addNavbarVisible()
 	}, 20)
 )
 window.addEventListener("resize", lazyload.load)
 window.addEventListener("orientationChange", lazyload.load)
-formInputs.map(input => input.addEventListener("focus", e => page.toggleInputFocus(e)))
+formInputs.map(input => input.addEventListener("focus", e => {
+    page.removeButtonError()
+    page.toggleInputFocus(e)
+}))
 formInputs.map(input => input.addEventListener("blur", e => {
 	const id = targetId(e)
-	page.toggleInputFocus(e)
-	validate.isInputValid(e.target.value, id) ? page.inputSuccess(id): page.removeSuccess(id)
-	page.resizeTextareaToFitContent(e)
+    if(!e.target.value) page.toggleInputFocus(e)
+    validate.isInputValid(e.target.value, id) ? page.inputSuccess(id): page.removeSuccess(id)
+	if(!e.target.value) page.resizeTextareaToFitContent
 }))
-
-
-function Scroll() {
-	let y
-	let oldScroll
-	this.setOldScroll = () => oldScroll = this.getPositionY()
-	this.getPositionY = () => window.scrollY
-
-	this.disableScroll = () => {
-		y = this.getPositionY()
-		page.setVerticlePositionOfBody(y)
-		queryTarget('body').classList.add('stop-scrolling')
+function Announce() {
+	this.events = async() => {
+		const [intensive, leader] = tools.structureApprouchingEvents(await server.getEvents())
+		page.addInnerOf(
+			'#navbarInfo', 
+			`Nästa kurstillfällen: Intensiv Jägarexamen, den ${intensive}. Jaktledarutbildning, den ${leader}.`
+		)
+		page.addInnerOf('#intensiveEventDates', `Nästa kurstillfälle är den ${intensive}.`)
+		page.addInnerOf('#leadershipEventDates', `Nästa kurstillfälle är den ${leader}.`)
 	}
-	this.enableScroll = () => {
-		if(!validate.isScrollingDisabled()) return
-		page.removeVerticlePositionOfBody()
-		queryTarget('body').classList.remove('stop-scrolling')
-		this.scrollToInstantly({top: y})
+	this.formSubmissionSuccess = () => {
+		page.addButtonSuccess()
+		form.reset()
+		tools.throttle(function() {
+			page.removeSuccess()
+			page.resetTextareaHeight()
+		}, 3000)
 	}
-	this.direction = () => {
-		const scrollingUp = oldScroll > this.getPositionY()
-		this.setOldScroll()
-		return scrollingUp
-	}
-
-	this.keepYPosition = func => {
-		y = this.getPositionY()
-		func()
-		this.scrollToInstantly({top: y})
-	}
-
-	this.scrollToParameter = (param) => {
-		validate.setIsScrollingManual(false)
-		console.log('e')
-		const yOffset = -120
-		let y = queryTarget(param).getBoundingClientRect().top + window.pageYOffset + yOffset
-		window.scrollTo({top: y, behavior: 'smooth'})
-	}
-	this.scrollToTop = () => window.scrollTo({top: 0, behavior: 'smooth'})
-	this.scrollToBottom = () => window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'})
-	this.scrollToInstantly = param => window.scrollTo(param)
 }
+function Form() {
+	const xhr = new XMLHttpRequest()
+	const formDOM = queryTarget("#form")
+	this.requestMailing = e => validate.isFormValid(e) ? attemptDispatch() : ''
+	attemptDispatch = () => {
+		xhr.open(formDOM.method, formDOM.action)
+		xhr.setRequestHeader("Accept", "application/json")
+		xhr.onreadystatechange = () => {
+			if (xhr.readyState !== XMLHttpRequest.DONE) return
+			if(xhr.status === 200) announce.formSubmissionSuccess()
+		}
+		xhr.send(new FormData(formDOM))
+	}
+	this.reset = () => {
+		queryTarget("#form").reset()
+		page.toggleInputFocus()
+	}
+}
+function Lazyload() {
+	let images = [...queryTargetAll('.lazy')]
+	loadImage = image => image.classList.remove("lazy")
 
-
+	this.load = () => {
+		tools.throttle(() => {
+			if(!images.length) removeObserver()
+			images = images.filter(image => validate.isInWindow(image) ? loadImage(image) : image)
+		}, 17)
+	}
+	removeObserver = () => {
+		document.removeEventListener("scroll", this.load)
+		window.removeEventListener("resize", this.load)
+		window.removeEventListener("orientationChange", this.load)
+	}
+}
 function Menu() {
-	const menuBtn = () => queryTarget('.navbar-toggle')
-	const nav = () => queryTarget('.main-nav')
-	const navbar = () => [queryTarget('nav'), queryTarget('.top-bar')]
+	const menuBtn = queryTarget('.navbar-toggle')
+	const nav = queryTarget('.main-nav')
+	const navbar = [queryTarget('nav'), queryTarget('.top-bar')]
 	
 	this.toggleMenu = () => {
-		nav().classList.toggle('visible')
+		nav.classList.toggle('visible')
 		if(validate.isWidthMobile()) 
 			validate.isMenuVisible() ? scroll.disableScroll() : scroll.enableScroll()
-		menuBtn().classList.toggle('open')
+		menuBtn.classList.toggle('open')
 	}
 	this.closeMenu = () => {
 		scroll.enableScroll()
 		if(!validate.isMenuVisible()) return
-		nav().classList.remove('visible')
-		menuBtn().classList.remove('open')
+		nav.classList.remove('visible')
+		menuBtn.classList.remove('open')
 	}
 	this.toggleNavbarVisiblity = e => {
 		if(!validate.shouldNavbarVisibiltyToggle(e)) return
@@ -144,29 +155,9 @@ function Menu() {
 		this.closeMenu()
 		isScrollingUp ? this.addNavbarVisible() : this.removeNavbarVisible()
 	}
-	this.removeNavbarVisible = () => navbar().map(e => e.classList.remove('visible'))
-	this.addNavbarVisible = () => navbar().map(e => e.classList.add('visible'))
+	this.removeNavbarVisible = () => navbar.map(e => e.classList.remove('visible'))
+	this.addNavbarVisible = () => navbar.map(e => e.classList.add('visible'))
 }
-
-
-function Form() {
-	const xhr = new XMLHttpRequest()
-	this.requestMailing = e => validate.isFormValid(e) ? attemptDispatch() : ''
-	attemptDispatch = () => {
-		xhr.open(queryTarget("#form").method, queryTarget("#form").action)
-		xhr.setRequestHeader("Accept", "application/json")
-		xhr.onreadystatechange = () => {
-			if (xhr.readyState !== XMLHttpRequest.DONE) return
-			if(xhr.status === 200) announce.formSubmissionSuccess()
-		}
-		xhr.send(new FormData(queryTarget("#form")))
-	}
-	this.reset = () => {
-		queryTarget("#form").reset()
-		page.toggleInputFocus()
-	}
-}
-
 
 function Page() {
 	this.removePreloader = () => {
@@ -234,43 +225,45 @@ function Page() {
 	}
 }
 
+function Scroll() {
+	let y
+	let oldScroll
+	this.setOldScroll = () => oldScroll = this.getPositionY()
+	this.getPositionY = () => window.scrollY
 
-function Announce() {
-	this.events = async() => {
-		const [intensive, leader] = tools.structureApprouchingEvents(await server.getEvents())
-		page.addInnerOf('#navbarInfo', `Nästa kurstillfällen: Intensiv Jägarexamen, den ${intensive}. Jaktledarutbildning, den ${leader}.`)
-		page.addInnerOf('#intensiveEventDates', `Nästa kurstillfälle är den ${intensive}.`)
-		page.addInnerOf('#leadershipEventDates', `Nästa kurstillfälle är den ${leader}.`)
+	this.disableScroll = () => {
+		y = this.getPositionY()
+		page.setVerticlePositionOfBody(y)
+		queryTarget('body').classList.add('stop-scrolling')
 	}
-	this.formSubmissionSuccess = () => {
-		page.addButtonSuccess()
-		form.reset()
-		tools.throttle(function() {
-			page.removeSuccess()
-			page.resetTextareaHeight()
-		}, 3000)
+	this.enableScroll = () => {
+		if(!validate.isScrollingDisabled()) return
+		page.removeVerticlePositionOfBody()
+		queryTarget('body').classList.remove('stop-scrolling')
+		this.scrollToInstantly({top: y})
 	}
+	this.direction = () => {
+		const scrollingUp = oldScroll > this.getPositionY()
+		this.setOldScroll()
+		return scrollingUp
+	}
+
+	this.keepYPosition = func => {
+		y = this.getPositionY()
+		func()
+		this.scrollToInstantly({top: y})
+	}
+
+	this.scrollToParameter = (param) => {
+		validate.setIsScrollingManual(false)
+		const yOffset = -120
+		let y = queryTarget(param).getBoundingClientRect().top + window.pageYOffset + yOffset
+		window.scrollTo({top: y, behavior: 'smooth'})
+	}
+	this.scrollToTop = () => window.scrollTo({top: 0, behavior: 'smooth'})
+	this.scrollToBottom = () => window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'})
+	this.scrollToInstantly = param => window.scrollTo(param)
 }
-
-
-function Lazyload() {
-	let images = document.querySelectorAll(".lazy")
-	loadImage = image => image.classList.remove("lazy")
-
-	this.load = () => {
-		tools.throttle(() => {
-			if(!images.length) removeObserver()
-			images = [...images].filter(image => validate.isInWindow(image) ? loadImage(image) : image)
-		}, 17)
-	}
-	removeObserver = () => {
-		document.removeEventListener("scroll", this.load)
-		window.removeEventListener("resize", this.load)
-		window.removeEventListener("orientationChange", this.load)
-	}
-}
-
-
 function Server() {
 	this.data
 
@@ -291,7 +284,6 @@ function Server() {
 		return Promise.resolve(sort.sortDataByEvent())
 	}
 }
-
 function Sort() {
 	this.sortData = (events) => {
 		server.data = {
@@ -324,6 +316,70 @@ function Sort() {
 			), [[], [], [], [], []]
 		)
 	}
+}
+
+function Tools() {
+	let throttle
+	this.lastClickTimeStamp = 0
+	this.lastScrollTimeStamp = 0
+	this.DOMContentLoadedTimeStamp
+	this.setDOMContentLoadedTimeStamp = e => this.DOMContentLoadedTimeStamp = e.timeStamp
+	this.setLastClickTimeStamp = e => this.lastClickTimeStamp = e.timeStamp
+	this.setLastScrollTimeStamp = e => this.lastClickTimeStamp = e.timeStamp
+	this.timeBetweenLastClickAndScroll = () => this.lastScrollTimeStamp - this.lastClickTimeStamp
+	this.getScreenWidth = () => screen.width
+
+	this.throttle = (func, ms) => {
+		this.cancelThrottle()
+		throttle = setTimeout(() => func(), ms)
+	}
+	this.cancelThrottle = () => throttle ? clearTimeout(throttle) : ''
+
+	this.numberToMonth = number => months[number-1]
+
+	this.dateStringIntoIntObject = string => {
+		dateArr = string.split("/")
+		return {
+			date: this.stringToInt(dateArr[0]),
+			month: this.stringToInt(dateArr[1]),
+			year: this.stringToInt(dateArr[2]),
+		}
+	}
+
+	this.getDate = () => {
+		return {
+			date: date.getDate(),
+			month: date.getMonth() + 1,
+			year: date.getFullYear(),
+		}
+	}
+
+	this.stringToInt = string => parseInt(string)
+
+	this.compareDates = (dateA, dateB) => {
+		const scoreOfDate = (dateA.year*365 + dateA.month * 31 + dateA.date) - (dateB.year*365 + dateB.month * 31 + dateB.date)
+		return scoreOfDate === 0 ? 0 : scoreOfDate < 0 ? -1 : 1 
+		// 0 = now, -1 = future, 1 = past
+	}
+
+	this.produceDateString = event => {
+		return combineDatesBasedOnMonthAndDate(
+			this.dateStringIntoIntObject(event.info.startDate),
+			this.dateStringIntoIntObject(event.info.endDate)
+		)
+	}
+	combineDatesBasedOnMonthAndDate = (startDate, endDate) => {
+		const startMonth = this.numberToMonth(startDate.month)
+		if(startDate.month === endDate.month)
+			return startDate.date === endDate.date ? `${startDate.date} ${startMonth}` 
+			: `${startDate.date}-${endDate.date} ${startMonth}`
+		else return `${startDate.date} ${startMonth}-${endDate.date} ${this.numberToMonth(endDate.month)}`
+	}
+	this.structureApprouchingEvents = ([intensive, leader]) => [
+		intensive.length === 1 ? tools.produceDateString(intensive[0]) 
+			: `${tools.produceDateString(intensive[0])} och ${tools.produceDateString(intensive[1])}`,
+		tools.produceDateString(leader[0])
+	]
 }
 
 function Validate() {
@@ -403,66 +459,4 @@ function Validate() {
 		}
 		return input ? true : false
 	}
-}
-
-
-function Tools() {
-	let throttle
-	this.lastClickTimeStamp = 0
-	this.DOMContentLoadedTimeStamp
-	this.setDOMContentLoadedTimeStamp = e => this.DOMContentLoadedTimeStamp = e.timeStamp
-	this.setLastClickTimeStamp = e => this.lastClickTimeStamp = e.timeStamp
-	this.getScreenWidth = () => screen.width
-
-	this.throttle = (func, ms) => {
-		this.cancelThrottle()
-		throttle = setTimeout(() => func(), ms)
-	}
-	this.cancelThrottle = () => throttle ? clearTimeout(throttle) : ''
-
-	this.numberToMonth = number => months[number-1]
-
-	this.dateStringIntoIntObject = string => {
-		dateArr = string.split("/")
-		return {
-			date: this.stringToInt(dateArr[0]),
-			month: this.stringToInt(dateArr[1]),
-			year: this.stringToInt(dateArr[2]),
-		}
-	}
-
-	this.getDate = () => {
-		return {
-			date: date.getDate(),
-			month: date.getMonth() + 1,
-			year: date.getFullYear(),
-		}
-	}
-
-	this.stringToInt = string => parseInt(string)
-
-	this.compareDates = (dateA, dateB) => {
-		const scoreOfDate = (dateA.year*365 + dateA.month * 31 + dateA.date) - (dateB.year*365 + dateB.month * 31 + dateB.date)
-		return scoreOfDate === 0 ? 0 : scoreOfDate < 0 ? -1 : 1 
-		// 0 = now, -1 = future, 1 = past
-	}
-
-	this.produceDateString = event => {
-		return combineDatesBasedOnMonthAndDate(
-			this.dateStringIntoIntObject(event.info.startDate),
-			this.dateStringIntoIntObject(event.info.endDate)
-		)
-	}
-	combineDatesBasedOnMonthAndDate = (startDate, endDate) => {
-		const startMonth = this.numberToMonth(startDate.month)
-		if(startDate.month === endDate.month)
-			return startDate.date === endDate.date ? `${startDate.date} ${startMonth}` 
-			: `${startDate.date}-${endDate.date} ${startMonth}`
-		else return `${startDate.date} ${startMonth}-${endDate.date} ${this.numberToMonth(endDate.month)}`
-	}
-	this.structureApprouchingEvents = ([intensive, leader]) => [
-		intensive.length === 1 ? tools.produceDateString(intensive[0]) 
-			: `${tools.produceDateString(intensive[0])} och ${tools.produceDateString(intensive[1])}`,
-		tools.produceDateString(leader[0])
-	]
 }
