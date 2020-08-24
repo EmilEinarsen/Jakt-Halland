@@ -21,15 +21,15 @@ const formInputs = [...queryTargetAll('input'), queryTarget('textarea')]
 document.addEventListener("DOMContentLoaded", e => {
 	tools.setDOMContentLoadedTimeStamp(e)
 	menu = new Menu()
+	if(scroll.getPositionY() < 100) menu.addNavbarTransparent()
 	announce.events()
 	lazyload.load()
 })
 
 document.addEventListener("click", e => { 
 	const id = targetId(e)
-	tools.setLastClickTimeStamp(e)
 
-	parentId(e) === 'btnMenu' ? menu.toggleMenu() : menu.closeMenu()
+	targetId(e) === 'btnMenu' ? menu.toggleMenu() : menu.closeMenu()
 
 	if(id === 'parallax-circle') scroll.scrollToParameter('.thumbnail-container')
 
@@ -43,9 +43,11 @@ document.addEventListener("click", e => {
 
 	if(id === 'nav-5' || id === 'btn-parallax-2') scroll.scrollToParameter('.form')
 
-	if(id === 'icon') scroll.scrollToTop()
+	if(id === 'logo') scroll.scrollToTop()
 
 	if(id ==='article') page.toggleArticle(e)
+
+	tools.setLastClickTimeStamp(e)
 })
 queryTarget("#form").addEventListener("submit", e => {
 	e.preventDefault()
@@ -63,8 +65,16 @@ queryTarget("#form").addEventListener("input", e => {
 window.addEventListener("scroll", e => tools.throttle(function() {
 		lazyload.load()
 		tools.setLastScrollTimeStamp(e)
-		if(tools.timeBetweenLastClickAndScroll()>30) menu.toggleNavbarVisiblity(e)
-		if(scroll.getPositionY() < 40) menu.addNavbarVisible()
+		if(tools.timeBetweenLastClickAndScroll()>40 && scroll.getPositionY() >= 400) {
+			menu.toggleNavbarVisiblity(e)
+		}
+		if(scroll.getPositionY() >= 100) {
+			menu.removeNavbarTransparent()
+		}
+		if(scroll.getPositionY() < 100) {
+			menu.addNavbarVisible()
+			menu.addNavbarTransparent()
+		}
 	}, 20)
 )
 window.addEventListener("resize", lazyload.load)

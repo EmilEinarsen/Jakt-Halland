@@ -1,11 +1,11 @@
 
 function Validate() {
-	this.isWidthMobile = () => tools.getScreenWidth() < 880
+	this.isWidthMobile = () => tools.getScreenWidth() < 1024
 	this.isInWindow = querytarget => querytarget.offsetTop < (window.innerHeight + window.pageYOffset)
 	this.isFormAnnouncingSuccess = () => queryTarget('form').classList.contains('success')
 	this.isFormAnnouncingError = () => queryTarget('form').classList.contains('error')
 	this.isScrollingDisabled = () => queryTarget('body').classList.contains('stop-scrolling')
-	this.isMenuVisible = () => queryTarget('.main-nav').classList.contains('visible')
+	this.isMenuOpen = () => queryTarget('nav').classList.contains('open')
 	let isScrollingManual = true
 	this.setIsScrollingManual = bool => isScrollingManual = bool
 

@@ -2,8 +2,8 @@ function Announce() {
 	this.events = async() => {
 		const [intensive, leader] = tools.structureApprouchingEvents(await server.getEvents())
 		page.addInnerOf(
-			'#navbarInfo', 
-			`Nästa kurstillfällen: Intensiv Jägarexamen, den ${intensive}. Jaktledarutbildning, den ${leader}.`
+			'#parallaxInfo', 
+			`Nästa kurstillfällen: <span>Intensiv Jägarexamen, den ${intensive}.</span> <span>Jaktledarutbildning, den ${leader}.</span>`
 		)
 		page.addInnerOf('#intensiveEventDates', `Nästa kurstillfälle är den ${intensive}.`)
 		page.addInnerOf('#leadershipEventDates', `Nästa kurstillfälle är den ${leader}.`)

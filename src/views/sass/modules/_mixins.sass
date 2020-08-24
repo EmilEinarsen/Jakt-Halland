@@ -7,6 +7,10 @@
         @content
 
 @mixin largeDesktop
+    @media (min-width: 1550px) 
+        @content
+
+@mixin mediumDesktop
     @media (min-width: 1300px) 
         @content
 
@@ -16,4 +20,11 @@
 
 @mixin tablet
     @media (min-width: 768px) 
+        @content
+
+@mixin largeMobile
+    @media (min-width: 600px) 
+        @content
+@mixin smallMobile
+    @media (min-width: 400px) 
         @content

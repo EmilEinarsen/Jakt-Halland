@@ -21,15 +21,15 @@ const formInputs = [...queryTargetAll('input'), queryTarget('textarea')]
 document.addEventListener("DOMContentLoaded", e => {
 	tools.setDOMContentLoadedTimeStamp(e)
 	menu = new Menu()
+	if(scroll.getPositionY() < 100) menu.addNavbarTransparent()
 	announce.events()
 	lazyload.load()
 })
 
 document.addEventListener("click", e => { 
 	const id = targetId(e)
-	tools.setLastClickTimeStamp(e)
 
-	parentId(e) === 'btnMenu' ? menu.toggleMenu() : menu.closeMenu()
+	targetId(e) === 'btnMenu' ? menu.toggleMenu() : menu.closeMenu()
 
 	if(id === 'parallax-circle') scroll.scrollToParameter('.thumbnail-container')
 
@@ -43,9 +43,11 @@ document.addEventListener("click", e => {
 
 	if(id === 'nav-5' || id === 'btn-parallax-2') scroll.scrollToParameter('.form')
 
-	if(id === 'icon') scroll.scrollToTop()
+	if(id === 'logo') scroll.scrollToTop()
 
 	if(id ==='article') page.toggleArticle(e)
+
+	tools.setLastClickTimeStamp(e)
 })
 queryTarget("#form").addEventListener("submit", e => {
 	e.preventDefault()
@@ -63,8 +65,16 @@ queryTarget("#form").addEventListener("input", e => {
 window.addEventListener("scroll", e => tools.throttle(function() {
 		lazyload.load()
 		tools.setLastScrollTimeStamp(e)
-		if(tools.timeBetweenLastClickAndScroll()>30) menu.toggleNavbarVisiblity(e)
-		if(scroll.getPositionY() < 40) menu.addNavbarVisible()
+		if(tools.timeBetweenLastClickAndScroll()>40 && scroll.getPositionY() >= 400) {
+			menu.toggleNavbarVisiblity(e)
+		}
+		if(scroll.getPositionY() >= 100) {
+			menu.removeNavbarTransparent()
+		}
+		if(scroll.getPositionY() < 100) {
+			menu.addNavbarVisible()
+			menu.addNavbarTransparent()
+		}
 	}, 20)
 )
 window.addEventListener("resize", lazyload.load)
@@ -83,8 +93,8 @@ function Announce() {
 	this.events = async() => {
 		const [intensive, leader] = tools.structureApprouchingEvents(await server.getEvents())
 		page.addInnerOf(
-			'#navbarInfo', 
-			`Nästa kurstillfällen: Intensiv Jägarexamen, den ${intensive}. Jaktledarutbildning, den ${leader}.`
+			'#parallaxInfo', 
+			`Nästa kurstillfällen: <span>Intensiv Jägarexamen, den ${intensive}.</span> <span>Jaktledarutbildning, den ${leader}.</span>`
 		)
 		page.addInnerOf('#intensiveEventDates', `Nästa kurstillfälle är den ${intensive}.`)
 		page.addInnerOf('#leadershipEventDates', `Nästa kurstillfälle är den ${leader}.`)
@@ -133,21 +143,17 @@ function Lazyload() {
 	}
 }
 function Menu() {
-	const menuBtn = queryTarget('.navbar-toggle')
-	const nav = queryTarget('.main-nav')
-	const navbar = [queryTarget('nav'), queryTarget('.top-bar')]
+	const navbar = queryTarget('nav')
 	
 	this.toggleMenu = () => {
-		nav.classList.toggle('visible')
+		navbar.classList.toggle('open')
 		if(validate.isWidthMobile()) 
-			validate.isMenuVisible() ? scroll.disableScroll() : scroll.enableScroll()
-		menuBtn.classList.toggle('open')
+			validate.isMenuOpen() ? scroll.disableScroll() : scroll.enableScroll()
 	}
 	this.closeMenu = () => {
 		scroll.enableScroll()
-		if(!validate.isMenuVisible()) return
-		nav.classList.remove('visible')
-		menuBtn.classList.remove('open')
+		if(!validate.isMenuOpen()) return
+		navbar.classList.remove('open')
 	}
 	this.toggleNavbarVisiblity = e => {
 		if(!validate.shouldNavbarVisibiltyToggle(e)) return
@@ -155,8 +161,11 @@ function Menu() {
 		this.closeMenu()
 		isScrollingUp ? this.addNavbarVisible() : this.removeNavbarVisible()
 	}
-	this.removeNavbarVisible = () => navbar.map(e => e.classList.remove('visible'))
-	this.addNavbarVisible = () => navbar.map(e => e.classList.add('visible'))
+	this.addNavbarVisible = () => navbar.classList.add('visible')
+	this.removeNavbarVisible = () => navbar.classList.remove('visible')
+	this.addNavbarTransparent = () => navbar.classList.add('transparent')
+	this.removeNavbarTransparent = () => navbar.classList.remove('transparent')
+	
 }
 
 function Page() {
@@ -245,6 +254,7 @@ function Scroll() {
 	this.direction = () => {
 		const scrollingUp = oldScroll > this.getPositionY()
 		this.setOldScroll()
+		console.log(scrollingUp)
 		return scrollingUp
 	}
 
@@ -325,7 +335,7 @@ function Tools() {
 	this.DOMContentLoadedTimeStamp
 	this.setDOMContentLoadedTimeStamp = e => this.DOMContentLoadedTimeStamp = e.timeStamp
 	this.setLastClickTimeStamp = e => this.lastClickTimeStamp = e.timeStamp
-	this.setLastScrollTimeStamp = e => this.lastClickTimeStamp = e.timeStamp
+	this.setLastScrollTimeStamp = e => this.lastScrollTimeStamp = e.timeStamp
 	this.timeBetweenLastClickAndScroll = () => this.lastScrollTimeStamp - this.lastClickTimeStamp
 	this.getScreenWidth = () => screen.width
 
@@ -383,12 +393,12 @@ function Tools() {
 }
 
 function Validate() {
-	this.isWidthMobile = () => tools.getScreenWidth() < 880
+	this.isWidthMobile = () => tools.getScreenWidth() < 1024
 	this.isInWindow = querytarget => querytarget.offsetTop < (window.innerHeight + window.pageYOffset)
 	this.isFormAnnouncingSuccess = () => queryTarget('form').classList.contains('success')
 	this.isFormAnnouncingError = () => queryTarget('form').classList.contains('error')
 	this.isScrollingDisabled = () => queryTarget('body').classList.contains('stop-scrolling')
-	this.isMenuVisible = () => queryTarget('.main-nav').classList.contains('visible')
+	this.isMenuOpen = () => queryTarget('nav').classList.contains('open')
 	let isScrollingManual = true
 	this.setIsScrollingManual = bool => isScrollingManual = bool
 

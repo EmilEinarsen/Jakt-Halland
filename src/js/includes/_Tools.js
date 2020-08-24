@@ -6,7 +6,7 @@ function Tools() {
 	this.DOMContentLoadedTimeStamp
 	this.setDOMContentLoadedTimeStamp = e => this.DOMContentLoadedTimeStamp = e.timeStamp
 	this.setLastClickTimeStamp = e => this.lastClickTimeStamp = e.timeStamp
-	this.setLastScrollTimeStamp = e => this.lastClickTimeStamp = e.timeStamp
+	this.setLastScrollTimeStamp = e => this.lastScrollTimeStamp = e.timeStamp
 	this.timeBetweenLastClickAndScroll = () => this.lastScrollTimeStamp - this.lastClickTimeStamp
 	this.getScreenWidth = () => screen.width
 
