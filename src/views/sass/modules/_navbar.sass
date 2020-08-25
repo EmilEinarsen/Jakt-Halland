@@ -8,9 +8,9 @@ nav
     padding: 25px 25px 70px 25px
     margin: -110px 0 0 0
     @include tablet
-        padding: 40px 50px 70px 50px
+        padding: 25px 50px 70px 50px
     @include mediumDesktop
-        padding: 40px 120px 70px 120px
+        padding: 25px 120px 70px 120px
     & > div
         position: relative
         @extend .wrapper
@@ -48,17 +48,13 @@ nav
                 & > p
                     text-align: center
                     text-transform: uppercase
-                    color: #C5AB4E
+                    color: color(secondary)
                     font-size: 22px
                     margin: 0 0 0 20px
                     @include largeMobile
                         font-size: 30px
-                    @include tablet
-                        font-size: 35px
                 &:hover
                     & > p
-                        padding: 6px 0 4px 0
-                        border-bottom: 2px #C5AB4E solid
 
             & > .menu-toggle
                 display: flex
@@ -70,14 +66,14 @@ nav
                 @include smallMobile
                     width: 110px
                 @include largeMobile
-                    width: 125px
-                    top: -10px
+                    width: 140px
+                    top: -5px
                     height: 60px
                 @include largeTablet
                     display: none
                 & > a
                     text-transform: uppercase
-                    color: #C5AB4E
+                    color: color(secondary)
                     font-size: 0
                     @include smallMobile
                         font-size: 22px
@@ -122,14 +118,12 @@ nav
                 width: percentage(975/1680)
             & > li
                 font-size: 20px
-                color: #C5AB4E
+                color: color(primary)
                 @include largeDesktop
                     font-size: 25px
 
             & > li:hover
                 @include largeTablet
-                    padding: 6px 0 4px 0
-                    border-bottom: 2px #C5AB4E solid
 
     &.transparent
         @include largeMobile
@@ -140,11 +134,11 @@ nav
                         & > li
                             color: #fff
                         & > li:nth-child(1), & > li:nth-child(2)
-                            color: #C5AB4E
+                            @include largeTablet
+                                color: color(secondary)
                         & > li:hover
                             @include largeTablet
-                                border-bottom: 2px #C5AB4E solid
-                            
+                      
     &.open
         background-color: #fff
         & > div
@@ -167,7 +161,7 @@ nav
                 & > li
                     text-transform: uppercase
                     padding: 25px 25px
-                    color: #223D6E
+                    color: color(primary)
                     border-bottom: 2px #f8f9fa solid
                     font-size: 22px
                     width: auto

@@ -14,8 +14,6 @@ const date = new Date()
 const server = new Server()
 const form = new Form()
 const lazyload = new Lazyload()
-const months = ["Januari", "Februari", "Mars", "April", "Maj", "Juni", 
-"Juli", "Augusti", "September", "Oktober", "November", "December"]
 const formInputs = [...queryTargetAll('input'), queryTarget('textarea')]
 
 document.addEventListener("DOMContentLoaded", e => {
@@ -29,19 +27,19 @@ document.addEventListener("DOMContentLoaded", e => {
 document.addEventListener("click", e => { 
 	const id = targetId(e)
 
-	targetId(e) === 'btnMenu' ? menu.toggleMenu() : menu.closeMenu()
+	targetId(e) === 'btnMenu' ? menu.toggle() : menu.close()
 
 	if(id === 'parallax-circle') scroll.scrollToParameter('.thumbnail-container')
 
 	if(id === 'nav-1') scroll.scrollToTop()
 
-	if(id === 'thumbnail-1' || id === 'nav-2' || id === 'btn-parallax-1') scroll.scrollToParameter('.article-1')
+	if(id === 'thumbnail-1' || id === 'nav-2' || id === 'parallax-1' ) scroll.scrollToParameter('.article-1')
 
 	if(id === 'thumbnail-2' || id === 'nav-3') scroll.scrollToParameter('.article-2')
 
 	if(id === 'thumbnail-3' || id === 'nav-4') scroll.scrollToParameter('.article-3')
 
-	if(id === 'nav-5' || id === 'btn-parallax-2') scroll.scrollToParameter('.form')
+	if(id === 'nav-5' || id === 'parallax-2') scroll.scrollToParameter('.form')
 
 	if(id === 'logo') scroll.scrollToTop()
 
@@ -68,16 +66,17 @@ window.addEventListener("scroll", e => tools.throttle(function() {
 		if(tools.timeBetweenLastClickAndScroll()>40 && scroll.getPositionY() >= 400) {
 			menu.toggleNavbarVisiblity(e)
 		}
-		if(scroll.getPositionY() >= 100) {
-			menu.removeNavbarTransparent()
-		}
-		if(scroll.getPositionY() < 100) {
+		if(scroll.getPositionY() >= 10) menu.removeNavbarTransparent()
+		if(!validate.isWidthMobile ? scroll.getPositionY() < 50 : scroll.getPositionY() <= 10) {
 			menu.addNavbarVisible()
 			menu.addNavbarTransparent()
 		}
 	}, 20)
 )
-window.addEventListener("resize", lazyload.load)
+window.addEventListener("resize", () => {
+	if(!validate.isWidthMobile()) tools.throttle(menu.close(), 20)
+	lazyload.load()
+})
 window.addEventListener("orientationChange", lazyload.load)
 formInputs.map(input => input.addEventListener("focus", e => {
     page.removeButtonError()
@@ -145,12 +144,12 @@ function Lazyload() {
 function Menu() {
 	const navbar = queryTarget('nav')
 	
-	this.toggleMenu = () => {
+	this.toggle = () => {
 		navbar.classList.toggle('open')
 		if(validate.isWidthMobile()) 
 			validate.isMenuOpen() ? scroll.disableScroll() : scroll.enableScroll()
 	}
-	this.closeMenu = () => {
+	this.close = () => {
 		scroll.enableScroll()
 		if(!validate.isMenuOpen()) return
 		navbar.classList.remove('open')
@@ -165,7 +164,6 @@ function Menu() {
 	this.removeNavbarVisible = () => navbar.classList.remove('visible')
 	this.addNavbarTransparent = () => navbar.classList.add('transparent')
 	this.removeNavbarTransparent = () => navbar.classList.remove('transparent')
-	
 }
 
 function Page() {
@@ -330,6 +328,9 @@ function Sort() {
 
 function Tools() {
 	let throttle
+	const months = ["Januari", "Februari", "Mars", "April", "Maj", "Juni", 
+	"Juli", "Augusti", "September", "Oktober", "November", "December"]
+
 	this.lastClickTimeStamp = 0
 	this.lastScrollTimeStamp = 0
 	this.DOMContentLoadedTimeStamp

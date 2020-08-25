@@ -1,4 +1,6 @@
 @import "./modules/_mixins"
+@import "./modules/_functions"
+@import "./modules/_variables"
 @import "./modules/_loader"
 @import "./modules/_navbar"
 @import "./modules/_parallax"
@@ -86,12 +88,6 @@ body
 
 .pointer
 	cursor: pointer
-
-.default-button
-		@extend .pointer
-		background-color: color(hagatun)
-		&:hover
-			background-color: color(hagatun-dark)
 
 .disable-higlight
 	user-select: none

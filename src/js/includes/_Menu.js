@@ -1,12 +1,12 @@
 function Menu() {
 	const navbar = queryTarget('nav')
 	
-	this.toggleMenu = () => {
+	this.toggle = () => {
 		navbar.classList.toggle('open')
 		if(validate.isWidthMobile()) 
 			validate.isMenuOpen() ? scroll.disableScroll() : scroll.enableScroll()
 	}
-	this.closeMenu = () => {
+	this.close = () => {
 		scroll.enableScroll()
 		if(!validate.isMenuOpen()) return
 		navbar.classList.remove('open')
@@ -21,5 +21,4 @@ function Menu() {
 	this.removeNavbarVisible = () => navbar.classList.remove('visible')
 	this.addNavbarTransparent = () => navbar.classList.add('transparent')
 	this.removeNavbarTransparent = () => navbar.classList.remove('transparent')
-	
 }

@@ -74,10 +74,10 @@ nav {
   margin: -110px 0 0 0; }
   @media (min-width: 768px) {
     nav {
-      padding: 40px 50px 70px 50px; } }
+      padding: 25px 50px 70px 50px; } }
   @media (min-width: 1300px) {
     nav {
-      padding: 40px 120px 70px 120px; } }
+      padding: 25px 120px 70px 120px; } }
   nav > div {
     position: relative;
     max-width: 1680px !important;
@@ -110,12 +110,6 @@ nav {
         @media (min-width: 600px) {
           nav > div > div > .logo-container > p {
             font-size: 30px; } }
-        @media (min-width: 768px) {
-          nav > div > div > .logo-container > p {
-            font-size: 35px; } }
-      nav > div > div > .logo-container:hover > p {
-        padding: 6px 0 4px 0;
-        border-bottom: 2px #C5AB4E solid; }
     nav > div > div > .menu-toggle {
       display: flex;
       align-items: center;
@@ -128,8 +122,8 @@ nav {
           width: 110px; } }
       @media (min-width: 600px) {
         nav > div > div > .menu-toggle {
-          width: 125px;
-          top: -10px;
+          width: 140px;
+          top: -5px;
           height: 60px; } }
       @media (min-width: 1024px) {
         nav > div > div > .menu-toggle {
@@ -185,26 +179,20 @@ nav {
           width: 58.03571%; } }
       nav > div > .main-nav > li {
         font-size: 20px;
-        color: #C5AB4E; }
+        color: #223D6E; }
         @media (min-width: 1550px) {
           nav > div > .main-nav > li {
             font-size: 25px; } }
-      @media (min-width: 1024px) {
-        nav > div > .main-nav > li:hover {
-          padding: 6px 0 4px 0;
-          border-bottom: 2px #C5AB4E solid; } }
   @media (min-width: 600px) {
     nav.transparent {
       background-color: transparent; } }
   @media (min-width: 600px) and (min-width: 768px) {
     nav.transparent > div > .main-nav > li {
-      color: #fff; }
-    nav.transparent > div > .main-nav > li:nth-child(1), nav.transparent > div > .main-nav > li:nth-child(2) {
-      color: #C5AB4E; } }
+      color: #fff; } }
 
 @media (min-width: 600px) and (min-width: 768px) and (min-width: 1024px) {
-  nav.transparent > div > .main-nav > li:hover {
-    border-bottom: 2px #C5AB4E solid; } }
+  nav.transparent > div > .main-nav > li:nth-child(1), nav.transparent > div > .main-nav > li:nth-child(2) {
+    color: #C5AB4E; } }
   nav.open {
     background-color: #fff; }
     nav.open > div > div > .menu-toggle > a:nth-child(1) {
@@ -288,14 +276,12 @@ nav {
         margin: 50px auto 0 auto; } }
     @media (min-width: 1024px) {
       .landing-page > div:nth-child(1) {
-        margin: 0 auto;
         height: 600px; } }
     @media (min-width: 1300px) {
       .landing-page > div:nth-child(1) {
-        height: 550px; } }
+        height: 68vh; } }
     @media (min-width: 1550px) {
       .landing-page > div:nth-child(1) {
-        margin: 50px auto 0 auto;
         height: 600px; } }
     .landing-page > div:nth-child(1) > div:nth-child(1) {
       position: absolute;
@@ -324,7 +310,7 @@ nav {
           width: 53.57143%; } }
       @media (min-width: 1300px) {
         .landing-page > div:nth-child(1) > div:nth-child(1) {
-          height: 450px; } }
+          height: 58vh; } }
       @media (min-width: 1550px) {
         .landing-page > div:nth-child(1) > div:nth-child(1) {
           height: 500px;
@@ -365,16 +351,15 @@ nav {
         display: block;
         height: 3px;
         width: 150px;
-        margin: 12px 0;
+        margin: 10px 0;
         background-color: #fff; }
         @media (min-width: 600px) {
           .landing-page > div:nth-child(1) > div:nth-child(2) > span:nth-child(2) {
             height: 5px;
-            margin: 20px 0; } }
+            margin: 15px 0; } }
         @media (min-width: 1024px) {
           .landing-page > div:nth-child(1) > div:nth-child(2) > span:nth-child(2) {
-            height: 7px;
-            width: 200px;
+            width: 150px;
             background-color: #223D6E; } }
       .landing-page > div:nth-child(1) > div:nth-child(2) > p:nth-child(3) {
         font-size: 33px;
@@ -1209,15 +1194,10 @@ body {
   .gallery-colorshift div img:hover {
     filter: grayscale(20%); }
 
-.pointer, nav > div .menu-toggle, nav > div li, nav > div .logo-container, .thumbnail-container, .circle-arrow > span, .circle-arrow-thumbnail > span, .article > div:nth-child(2) > div > div > span:hover, .article-1 > div:nth-child(2) > div > div > span:hover, .article-2 > div:nth-child(2) > div > div > span:hover, .form > div:nth-child(2) > form > button:hover, .thumbnail, .thumbnail-colorshift, .gallery div img, .gallery-colorshift div img, .default-button {
+.pointer, nav > div .menu-toggle, nav > div li, nav > div .logo-container, .landing-page > div:nth-child(1) > div:nth-child(4) > button, .thumbnail-container, .circle-arrow > span, .circle-arrow-thumbnail > span, .article > div:nth-child(2) > div > div > span:hover, .article-1 > div:nth-child(2) > div > div > span:hover, .article-2 > div:nth-child(2) > div > div > span:hover, .form > div:nth-child(2) > form > button:hover, .thumbnail, .thumbnail-colorshift, .gallery div img, .gallery-colorshift div img {
   cursor: pointer; }
 
-.default-button {
-  background-color: color(hagatun); }
-  .default-button:hover {
-    background-color: color(hagatun-dark); }
-
-.disable-higlight, nav > div .img, nav > div p, nav > div a, nav > div li, .thumbnail-container > div > div:nth-child(1), .article > div:nth-child(2) > div > div > span, .article-1 > div:nth-child(2) > div > div > span, .article-2 > div:nth-child(2) > div > div > span {
+.disable-higlight, nav > div .img, nav > div p, nav > div a, nav > div li, .landing-page > div:nth-child(1) > div:nth-child(2) > p, .landing-page > div:nth-child(1) > div:nth-child(4) > button, .thumbnail-container > div > div:nth-child(1), .article > div:nth-child(2) > div > div > span, .article-1 > div:nth-child(2) > div > div > span, .article-2 > div:nth-child(2) > div > div > span {
   user-select: none;
   -webkit-user-select: none;
   -khtml-user-select: none;

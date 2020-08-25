@@ -1,6 +1,9 @@
 
 function Tools() {
 	let throttle
+	const months = ["Januari", "Februari", "Mars", "April", "Maj", "Juni", 
+	"Juli", "Augusti", "September", "Oktober", "November", "December"]
+
 	this.lastClickTimeStamp = 0
 	this.lastScrollTimeStamp = 0
 	this.DOMContentLoadedTimeStamp
