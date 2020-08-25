@@ -75,12 +75,15 @@ nav
                     text-transform: uppercase
                     color: color(secondary)
                     font-size: 0
+                    text-align: center
                     @include smallMobile
                         font-size: 22px
                     @include largeMobile
                         font-size: 30px
                     & > i
+                        width: 60px
                         @include smallMobile
+                            width: auto
                             padding: 0 10px 0 0
                 & > a:nth-child(1)
                     & > i
@@ -156,6 +159,8 @@ nav
                 width: 100vw
                 background-color: #fff
                 height: auto
+                max-height: 100vh
+                overflow: scroll
                 @include tablet
                     left: -50px
                 & > li
@@ -169,7 +174,7 @@ nav
                         font-size: 25px
                     @include tablet
                         font-size: 30px
-                        padding: 25px 65px
+                        padding: 25px 50px
                 & > li:first-child
                     border-top: 2px #f8f9fa solid
                 & > li:hover

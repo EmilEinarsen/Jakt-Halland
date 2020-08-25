@@ -1,8 +1,11 @@
 const gulp = require('gulp')
 const sass = require('gulp-sass')
 const browserSync = require('browser-sync').create()
-let concat = require('gulp-concat')
-let pug = require('gulp-pug')
+const concat = require('gulp-concat')
+const pug = require('gulp-pug')
+const cleanCSS = require('gulp-clean-css')
+const htmlmin = require('gulp-htmlmin')
+const minify = require('gulp-minify')
 
 const serverConfig = {
     server: {
@@ -22,26 +25,28 @@ const server = done => {
 }
 const scripts = () => gulp.src('./src/js/**/*.js')
     .pipe(concat('main.js'))
+    .pipe(minify())
     .pipe(gulp.dest('./public/js'))
     .pipe(browserSync.stream())
 
-const css = () => gulp.src('src/views/sass/*.sass')
+const styles = () => gulp.src('src/views/sass/*.sass')
     .pipe(sass())
+    .pipe(cleanCSS())
     .pipe(gulp.dest('public/css'))
     .pipe(browserSync.stream())
 
-const html = () => gulp.src('src/views/pug/*.pug')
+const pages = () => gulp.src('src/views/pug/*.pug')
     .pipe(pug(pugConfig))
+    .pipe(htmlmin({ collapseWhitespace: true }))
     .pipe(gulp.dest('public'))
     .pipe(browserSync.stream())
 
-
 gulp.task('watch', 
     gulp.series(
-        gulp.parallel(server, html, css, scripts),
+        gulp.parallel(server, pages, styles, scripts),
         () => {
-            gulp.watch('src/views/pug/**/*.pug', html)
-            gulp.watch('src/views/sass/**/*.sass', css)
+            gulp.watch('src/views/pug/**/*.pug', pages)
+            gulp.watch('src/views/sass/**/*.sass', styles)
             gulp.watch('src/js/**/*.js', scripts)
         }
     )

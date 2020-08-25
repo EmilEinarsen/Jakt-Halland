@@ -1,6 +1,7 @@
 
 function Validate() {
 	this.isWidthMobile = () => tools.getScreenWidth() < 1024
+	this.isWidthMobile = () => tools.getScreenWidth() < 1024
 	this.isInWindow = querytarget => querytarget.offsetTop < (window.innerHeight + window.pageYOffset)
 	this.isFormAnnouncingSuccess = () => queryTarget('form').classList.contains('success')
 	this.isFormAnnouncingError = () => queryTarget('form').classList.contains('error')
@@ -10,7 +11,7 @@ function Validate() {
 	this.setIsScrollingManual = bool => isScrollingManual = bool
 
 	this.shouldNavbarVisibiltyToggle = e => {
-		if(isScrollingManual && e.timeStamp - tools.DOMContentLoadedTimeStamp > 0) return true
+		if(isScrollingManual && e.timeStamp - tools.DOMContentLoadedTimeStamp > 1500 && tools.timeBetweenLastClickAndScroll()>40) return true
 		scroll.setOldScroll()
 		this.setIsScrollingManual(true)
 	}

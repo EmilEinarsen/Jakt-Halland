@@ -19,7 +19,7 @@ const formInputs = [...queryTargetAll('input'), queryTarget('textarea')]
 document.addEventListener("DOMContentLoaded", e => {
 	tools.setDOMContentLoadedTimeStamp(e)
 	menu = new Menu()
-	if(scroll.getPositionY() < 100) menu.addNavbarTransparent()
+	menu.toggleNavbarTransparency()
 	announce.events()
 	lazyload.load()
 })
@@ -63,21 +63,23 @@ queryTarget("#form").addEventListener("input", e => {
 window.addEventListener("scroll", e => tools.throttle(function() {
 		lazyload.load()
 		tools.setLastScrollTimeStamp(e)
-		if(tools.timeBetweenLastClickAndScroll()>40 && scroll.getPositionY() >= 400) {
-			menu.toggleNavbarVisiblity(e)
-		}
+		if(scroll.getPositionY() >= 400) menu.toggleNavbarVisiblity(e)
 		if(scroll.getPositionY() >= 10) menu.removeNavbarTransparent()
-		if(!validate.isWidthMobile ? scroll.getPositionY() < 50 : scroll.getPositionY() <= 10) {
+		if(!validate.isWidthMobile() ? scroll.getPositionY() < 50 : scroll.getPositionY() <= 10) {
 			menu.addNavbarVisible()
-			menu.addNavbarTransparent()
+			menu.toggleNavbarTransparency()
 		}
 	}, 20)
 )
 window.addEventListener("resize", () => {
 	if(!validate.isWidthMobile()) tools.throttle(menu.close(), 20)
+	menu.toggleNavbarTransparency()
 	lazyload.load()
 })
-window.addEventListener("orientationChange", lazyload.load)
+window.addEventListener("orientationChange", () => {
+	menu.toggleNavbarTransparency()
+	lazyload.load()
+})
 formInputs.map(input => input.addEventListener("focus", e => {
     page.removeButtonError()
     page.toggleInputFocus(e)
@@ -157,8 +159,12 @@ function Menu() {
 	this.toggleNavbarVisiblity = e => {
 		if(!validate.shouldNavbarVisibiltyToggle(e)) return
 		let isScrollingUp = scroll.direction()
-		this.closeMenu()
+		console.log(isScrollingUp)
+		this.close()
 		isScrollingUp ? this.addNavbarVisible() : this.removeNavbarVisible()
+	}
+	this.toggleNavbarTransparency = () => {
+		tools.getScreenHeight() <= 750 ? menu.removeNavbarTransparent() : menu.addNavbarTransparent()
 	}
 	this.addNavbarVisible = () => navbar.classList.add('visible')
 	this.removeNavbarVisible = () => navbar.classList.remove('visible')
@@ -252,7 +258,6 @@ function Scroll() {
 	this.direction = () => {
 		const scrollingUp = oldScroll > this.getPositionY()
 		this.setOldScroll()
-		console.log(scrollingUp)
 		return scrollingUp
 	}
 
@@ -339,6 +344,7 @@ function Tools() {
 	this.setLastScrollTimeStamp = e => this.lastScrollTimeStamp = e.timeStamp
 	this.timeBetweenLastClickAndScroll = () => this.lastScrollTimeStamp - this.lastClickTimeStamp
 	this.getScreenWidth = () => screen.width
+	this.getScreenHeight = () => screen.height
 
 	this.throttle = (func, ms) => {
 		this.cancelThrottle()
@@ -395,6 +401,7 @@ function Tools() {
 
 function Validate() {
 	this.isWidthMobile = () => tools.getScreenWidth() < 1024
+	this.isWidthMobile = () => tools.getScreenWidth() < 1024
 	this.isInWindow = querytarget => querytarget.offsetTop < (window.innerHeight + window.pageYOffset)
 	this.isFormAnnouncingSuccess = () => queryTarget('form').classList.contains('success')
 	this.isFormAnnouncingError = () => queryTarget('form').classList.contains('error')
@@ -404,7 +411,7 @@ function Validate() {
 	this.setIsScrollingManual = bool => isScrollingManual = bool
 
 	this.shouldNavbarVisibiltyToggle = e => {
-		if(isScrollingManual && e.timeStamp - tools.DOMContentLoadedTimeStamp > 0) return true
+		if(isScrollingManual && e.timeStamp - tools.DOMContentLoadedTimeStamp > 1500 && tools.timeBetweenLastClickAndScroll()>40) return true
 		scroll.setOldScroll()
 		this.setIsScrollingManual(true)
 	}

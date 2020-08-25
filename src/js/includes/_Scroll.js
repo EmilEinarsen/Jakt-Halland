@@ -18,7 +18,6 @@ function Scroll() {
 	this.direction = () => {
 		const scrollingUp = oldScroll > this.getPositionY()
 		this.setOldScroll()
-		console.log(scrollingUp)
 		return scrollingUp
 	}
 

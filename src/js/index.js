@@ -19,7 +19,7 @@ const formInputs = [...queryTargetAll('input'), queryTarget('textarea')]
 document.addEventListener("DOMContentLoaded", e => {
 	tools.setDOMContentLoadedTimeStamp(e)
 	menu = new Menu()
-	if(scroll.getPositionY() < 100) menu.addNavbarTransparent()
+	menu.toggleNavbarTransparency()
 	announce.events()
 	lazyload.load()
 })
@@ -63,21 +63,23 @@ queryTarget("#form").addEventListener("input", e => {
 window.addEventListener("scroll", e => tools.throttle(function() {
 		lazyload.load()
 		tools.setLastScrollTimeStamp(e)
-		if(tools.timeBetweenLastClickAndScroll()>40 && scroll.getPositionY() >= 400) {
-			menu.toggleNavbarVisiblity(e)
-		}
+		if(scroll.getPositionY() >= 400) menu.toggleNavbarVisiblity(e)
 		if(scroll.getPositionY() >= 10) menu.removeNavbarTransparent()
-		if(!validate.isWidthMobile ? scroll.getPositionY() < 50 : scroll.getPositionY() <= 10) {
+		if(!validate.isWidthMobile() ? scroll.getPositionY() < 50 : scroll.getPositionY() <= 10) {
 			menu.addNavbarVisible()
-			menu.addNavbarTransparent()
+			menu.toggleNavbarTransparency()
 		}
 	}, 20)
 )
 window.addEventListener("resize", () => {
 	if(!validate.isWidthMobile()) tools.throttle(menu.close(), 20)
+	menu.toggleNavbarTransparency()
 	lazyload.load()
 })
-window.addEventListener("orientationChange", lazyload.load)
+window.addEventListener("orientationChange", () => {
+	menu.toggleNavbarTransparency()
+	lazyload.load()
+})
 formInputs.map(input => input.addEventListener("focus", e => {
     page.removeButtonError()
     page.toggleInputFocus(e)

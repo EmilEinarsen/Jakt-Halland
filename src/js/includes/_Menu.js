@@ -14,8 +14,12 @@ function Menu() {
 	this.toggleNavbarVisiblity = e => {
 		if(!validate.shouldNavbarVisibiltyToggle(e)) return
 		let isScrollingUp = scroll.direction()
-		this.closeMenu()
+		console.log(isScrollingUp)
+		this.close()
 		isScrollingUp ? this.addNavbarVisible() : this.removeNavbarVisible()
+	}
+	this.toggleNavbarTransparency = () => {
+		tools.getScreenHeight() <= 750 ? menu.removeNavbarTransparent() : menu.addNavbarTransparent()
 	}
 	this.addNavbarVisible = () => navbar.classList.add('visible')
 	this.removeNavbarVisible = () => navbar.classList.remove('visible')

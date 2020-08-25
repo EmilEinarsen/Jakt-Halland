@@ -12,6 +12,7 @@ function Tools() {
 	this.setLastScrollTimeStamp = e => this.lastScrollTimeStamp = e.timeStamp
 	this.timeBetweenLastClickAndScroll = () => this.lastScrollTimeStamp - this.lastClickTimeStamp
 	this.getScreenWidth = () => screen.width
+	this.getScreenHeight = () => screen.height
 
 	this.throttle = (func, ms) => {
 		this.cancelThrottle()
