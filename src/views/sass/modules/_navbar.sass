@@ -118,11 +118,12 @@ nav
                 justify-content: space-between
                 align-items: center
             @include mediumDesktop
-                width: percentage(975/1680)
+                width: percentage(1000/1680)
             & > li
                 font-size: 20px
                 color: color(primary)
                 @include largeDesktop
+                    padding: 15.5px 10px
                     font-size: 25px
 
             & > li:hover
@@ -159,7 +160,7 @@ nav
                 width: 100vw
                 background-color: #fff
                 height: auto
-                max-height: 100vh
+                max-height: 60vh
                 overflow: scroll
                 @include tablet
                     left: -50px

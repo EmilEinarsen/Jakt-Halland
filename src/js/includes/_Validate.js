@@ -21,7 +21,7 @@ function Validate() {
 			tools.getDate(), 
 			tools.dateStringIntoIntObject(eventStart)
 		)
-		return (comparedDates === (0 || -1) ) ? true : false
+		return (comparedDates === 0 || comparedDates === -1) ? true : false
 	}
 	this.isFormValid = e => {
 		let errorMessages = {

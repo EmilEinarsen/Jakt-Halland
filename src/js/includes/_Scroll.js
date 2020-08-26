@@ -4,15 +4,19 @@ function Scroll() {
 	this.setOldScroll = () => oldScroll = this.getPositionY()
 	this.getPositionY = () => window.scrollY
 
-	this.disableScroll = () => {
+	this.toggleScroll = () => {
+		validate.isMenuOpen() ? this.disable() : this.enable()
+	}
+	this.disable = () => {
 		y = this.getPositionY()
 		page.setVerticlePositionOfBody(y)
 		queryTarget('body').classList.add('stop-scrolling')
 	}
-	this.enableScroll = () => {
+	this.enable = () => {
 		if(!validate.isScrollingDisabled()) return
 		page.removeVerticlePositionOfBody()
 		queryTarget('body').classList.remove('stop-scrolling')
+		console.log(y)
 		this.scrollToInstantly({top: y})
 	}
 	this.direction = () => {

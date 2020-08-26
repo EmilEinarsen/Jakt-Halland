@@ -13,6 +13,8 @@ function Page() {
 	this.removeOuterOf = param => {
 		queryTarget(param).outerHTML = ''
 	}
+	this.hideMe = param => queryTarget(param).style.display = 'none' 
+	this.hideParent = param =>  queryTarget(param).parentElement.style.display = 'none' 
 	this.toggleArticle = e => {
 		e.target.nextElementSibling.classList.toggle("closed")
 		e.target.children[0].classList.toggle("open")

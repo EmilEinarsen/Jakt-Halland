@@ -43,7 +43,7 @@ function Tools() {
 
 	this.compareDates = (dateA, dateB) => {
 		const scoreOfDate = (dateA.year*365 + dateA.month * 31 + dateA.date) - (dateB.year*365 + dateB.month * 31 + dateB.date)
-		return scoreOfDate === 0 ? 0 : scoreOfDate < 0 ? -1 : 1 
+		return scoreOfDate === 0 ? 0 : scoreOfDate < 0 ? -1 : 1
 		// 0 = now, -1 = future, 1 = past
 	}
 

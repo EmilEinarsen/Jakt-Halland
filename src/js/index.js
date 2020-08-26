@@ -14,6 +14,7 @@ const date = new Date()
 const server = new Server()
 const form = new Form()
 const lazyload = new Lazyload()
+Array.prototype.contains = function(obj) { return this.indexOf(obj) > -1 }
 const formInputs = [...queryTargetAll('input'), queryTarget('textarea')]
 
 document.addEventListener("DOMContentLoaded", e => {
@@ -29,21 +30,19 @@ document.addEventListener("click", e => {
 
 	targetId(e) === 'btnMenu' ? menu.toggle() : menu.close()
 
-	if(id === 'parallax-circle') scroll.scrollToParameter('.thumbnail-container')
-
 	if(id === 'nav-1') scroll.scrollToTop()
 
-	if(id === 'thumbnail-1' || id === 'nav-2' || id === 'parallax-1' ) scroll.scrollToParameter('.article-1')
+	if(['thumbnail-1', 'nav-2', 'parallax-1'].contains(id)) scroll.scrollToParameter('.article-1')
 
-	if(id === 'thumbnail-2' || id === 'nav-3') scroll.scrollToParameter('.article-2')
+	if(['thumbnail-2', 'nav-3'].contains(id)) scroll.scrollToParameter('.article-2')
 
-	if(id === 'thumbnail-3' || id === 'nav-4') scroll.scrollToParameter('.article-3')
+	if(['thumbnail-3', 'nav-4'].contains(id)) scroll.scrollToParameter('.article-3')
 
-	if(id === 'nav-5' || id === 'parallax-2') scroll.scrollToParameter('.form')
+	if(['nav-5', 'parallax-2'].contains(id)) scroll.scrollToParameter('.form')
 
 	if(id === 'logo') scroll.scrollToTop()
 
-	if(id ==='article') page.toggleArticle(e)
+	if(id === 'article') page.toggleArticle(e)
 
 	tools.setLastClickTimeStamp(e)
 })

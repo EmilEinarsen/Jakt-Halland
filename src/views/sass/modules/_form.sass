@@ -70,7 +70,7 @@
 	& > div:nth-child(2)
 		display: flex
 		flex-wrap: wrap
-		background-color: #fff
+		background-color: color(background)
 		margin: 80px 0 0 0
 		max-width: 500px
 		@include desktop
@@ -103,7 +103,7 @@
 			position: relative
 			min-width: 100%
 			padding: 40px 25px 25px 25px
-			background-color: #FFF
+			background-color: color(background)
 			transition: .3s
 			@include desktop
 				display: flex
@@ -124,7 +124,8 @@
 				height: auto
 
 			input, textarea
-				background-color: #ffffff00
+				background-color: darken(color(background), 3%)
+				border-radius: 2px 2px 0 0
 				font-size: 20px
 				padding: 10px
 				border-bottom: 2px solid #223D6E
@@ -236,7 +237,7 @@
 					margin: 0
 					font-size: 20px
 				&:hover
-					background-color: #223d6ef3
+					background-color: color(primary)
 					color: #fff
 					@extend .pointer
 				&:active

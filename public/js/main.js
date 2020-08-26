@@ -14,6 +14,7 @@ const date = new Date()
 const server = new Server()
 const form = new Form()
 const lazyload = new Lazyload()
+Array.prototype.contains = function(obj) { return this.indexOf(obj) > -1 }
 const formInputs = [...queryTargetAll('input'), queryTarget('textarea')]
 
 document.addEventListener("DOMContentLoaded", e => {
@@ -29,21 +30,19 @@ document.addEventListener("click", e => {
 
 	targetId(e) === 'btnMenu' ? menu.toggle() : menu.close()
 
-	if(id === 'parallax-circle') scroll.scrollToParameter('.thumbnail-container')
-
 	if(id === 'nav-1') scroll.scrollToTop()
 
-	if(id === 'thumbnail-1' || id === 'nav-2' || id === 'parallax-1' ) scroll.scrollToParameter('.article-1')
+	if(['thumbnail-1', 'nav-2', 'parallax-1'].contains(id)) scroll.scrollToParameter('.article-1')
 
-	if(id === 'thumbnail-2' || id === 'nav-3') scroll.scrollToParameter('.article-2')
+	if(['thumbnail-2', 'nav-3'].contains(id)) scroll.scrollToParameter('.article-2')
 
-	if(id === 'thumbnail-3' || id === 'nav-4') scroll.scrollToParameter('.article-3')
+	if(['thumbnail-3', 'nav-4'].contains(id)) scroll.scrollToParameter('.article-3')
 
-	if(id === 'nav-5' || id === 'parallax-2') scroll.scrollToParameter('.form')
+	if(['nav-5', 'parallax-2'].contains(id)) scroll.scrollToParameter('.form')
 
 	if(id === 'logo') scroll.scrollToTop()
 
-	if(id ==='article') page.toggleArticle(e)
+	if(id === 'article') page.toggleArticle(e)
 
 	tools.setLastClickTimeStamp(e)
 })
@@ -92,13 +91,21 @@ formInputs.map(input => input.addEventListener("blur", e => {
 }))
 function Announce() {
 	this.events = async() => {
-		const [intensive, leader] = tools.structureApprouchingEvents(await server.getEvents())
-		page.addInnerOf(
-			'#parallaxInfo', 
-			`Nästa kurstillfällen: <span>Intensiv Jägarexamen, den ${intensive}.</span> <span>Jaktledarutbildning, den ${leader}.</span>`
-		)
-		page.addInnerOf('#intensiveEventDates', `Nästa kurstillfälle är den ${intensive}.`)
-		page.addInnerOf('#leadershipEventDates', `Nästa kurstillfälle är den ${leader}.`)
+		let [intensive, leader] = tools.structureApprouchingEvents(await server.getEvents())
+		let events = `Nästa kurstillfällen: `
+
+		if(intensive) {
+			page.addInnerOf('#intensiveEventDates', `Nästa kurstillfälle är den ${intensive}.<br><br>`)
+			events = `${events} Intensiv Jägarexamen, den ${intensive}.`
+		} else page.hideMe('#intensiveEventDates')
+
+		if(leader) {
+			page.addInnerOf('#leadershipEventDates', `Nästa kurstillfälle är den ${leader}.<br><br>`)
+			events = `${events} Jaktledarutbildning, den ${leader}.`
+		} else page.hideMe('#leadershipEventDates')
+
+		if(!(intensive && leader)) page.hideParent('#parallaxInfo')
+		else page.addInnerOf('#parallaxInfo', events)
 	}
 	this.formSubmissionSuccess = () => {
 		page.addButtonSuccess()
@@ -148,23 +155,21 @@ function Menu() {
 	
 	this.toggle = () => {
 		navbar.classList.toggle('open')
-		if(validate.isWidthMobile()) 
-			validate.isMenuOpen() ? scroll.disableScroll() : scroll.enableScroll()
+		if(validate.isWidthMobile()) scroll.toggleScroll()
 	}
 	this.close = () => {
-		scroll.enableScroll()
+		scroll.enable()
 		if(!validate.isMenuOpen()) return
 		navbar.classList.remove('open')
 	}
 	this.toggleNavbarVisiblity = e => {
 		if(!validate.shouldNavbarVisibiltyToggle(e)) return
 		let isScrollingUp = scroll.direction()
-		console.log(isScrollingUp)
 		this.close()
 		isScrollingUp ? this.addNavbarVisible() : this.removeNavbarVisible()
 	}
 	this.toggleNavbarTransparency = () => {
-		tools.getScreenHeight() <= 750 ? menu.removeNavbarTransparent() : menu.addNavbarTransparent()
+		tools.getScreenHeight() <= 750 && scroll.getPositionY() < 50 ? menu.removeNavbarTransparent() : menu.addNavbarTransparent()
 	}
 	this.addNavbarVisible = () => navbar.classList.add('visible')
 	this.removeNavbarVisible = () => navbar.classList.remove('visible')
@@ -187,6 +192,8 @@ function Page() {
 	this.removeOuterOf = param => {
 		queryTarget(param).outerHTML = ''
 	}
+	this.hideMe = param => queryTarget(param).style.display = 'none' 
+	this.hideParent = param =>  queryTarget(param).parentElement.style.display = 'none' 
 	this.toggleArticle = e => {
 		e.target.nextElementSibling.classList.toggle("closed")
 		e.target.children[0].classList.toggle("open")
@@ -244,15 +251,19 @@ function Scroll() {
 	this.setOldScroll = () => oldScroll = this.getPositionY()
 	this.getPositionY = () => window.scrollY
 
-	this.disableScroll = () => {
+	this.toggleScroll = () => {
+		validate.isMenuOpen() ? this.disable() : this.enable()
+	}
+	this.disable = () => {
 		y = this.getPositionY()
 		page.setVerticlePositionOfBody(y)
 		queryTarget('body').classList.add('stop-scrolling')
 	}
-	this.enableScroll = () => {
+	this.enable = () => {
 		if(!validate.isScrollingDisabled()) return
 		page.removeVerticlePositionOfBody()
 		queryTarget('body').classList.remove('stop-scrolling')
+		console.log(y)
 		this.scrollToInstantly({top: y})
 	}
 	this.direction = () => {
@@ -375,7 +386,7 @@ function Tools() {
 
 	this.compareDates = (dateA, dateB) => {
 		const scoreOfDate = (dateA.year*365 + dateA.month * 31 + dateA.date) - (dateB.year*365 + dateB.month * 31 + dateB.date)
-		return scoreOfDate === 0 ? 0 : scoreOfDate < 0 ? -1 : 1 
+		return scoreOfDate === 0 ? 0 : scoreOfDate < 0 ? -1 : 1
 		// 0 = now, -1 = future, 1 = past
 	}
 
@@ -421,7 +432,7 @@ function Validate() {
 			tools.getDate(), 
 			tools.dateStringIntoIntObject(eventStart)
 		)
-		return (comparedDates === (0 || -1) ) ? true : false
+		return (comparedDates === 0 || comparedDates === -1) ? true : false
 	}
 	this.isFormValid = e => {
 		let errorMessages = {

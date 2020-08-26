@@ -1,12 +1,20 @@
 function Announce() {
 	this.events = async() => {
-		const [intensive, leader] = tools.structureApprouchingEvents(await server.getEvents())
-		page.addInnerOf(
-			'#parallaxInfo', 
-			`Nästa kurstillfällen: <span>Intensiv Jägarexamen, den ${intensive}.</span> <span>Jaktledarutbildning, den ${leader}.</span>`
-		)
-		page.addInnerOf('#intensiveEventDates', `Nästa kurstillfälle är den ${intensive}.`)
-		page.addInnerOf('#leadershipEventDates', `Nästa kurstillfälle är den ${leader}.`)
+		let [intensive, leader] = tools.structureApprouchingEvents(await server.getEvents())
+		let events = `Nästa kurstillfällen: `
+
+		if(intensive) {
+			page.addInnerOf('#intensiveEventDates', `Nästa kurstillfälle är den ${intensive}.<br><br>`)
+			events = `${events} Intensiv Jägarexamen, den ${intensive}.`
+		} else page.hideMe('#intensiveEventDates')
+
+		if(leader) {
+			page.addInnerOf('#leadershipEventDates', `Nästa kurstillfälle är den ${leader}.<br><br>`)
+			events = `${events} Jaktledarutbildning, den ${leader}.`
+		} else page.hideMe('#leadershipEventDates')
+
+		if(!(intensive && leader)) page.hideParent('#parallaxInfo')
+		else page.addInnerOf('#parallaxInfo', events)
 	}
 	this.formSubmissionSuccess = () => {
 		page.addButtonSuccess()
