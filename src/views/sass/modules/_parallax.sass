@@ -3,6 +3,7 @@ $sitePaddingX: 20px //max-width: 600px or mixin largeMobile
 $gridMaxWidth: 1680px 
 .landing-page
     overflow: hidden
+    position: relative
     display: grid
     height: auto
     justify-content: center
@@ -14,39 +15,43 @@ $gridMaxWidth: 1680px
         background: none
         padding: 0 20px
         background-color: color(primary)
+    @include tablet
+        padding: 0 50px
     @include largeTablet
         background-color: transparent
-        padding: 0 50px
     @include mediumDesktop
         padding: 0 120px
     & > div
-        position: relative
-        z-index: 2
         display: grid
         grid-template-columns: auto
         grid-template-rows: 100px 100px 340px 175px auto
         grid-template-areas: "header" "." "text-container" "button-container" "announcement"
-        min-height: 900px
+        min-height: 840px
         @include largeMobile
             min-height: 1000px
             max-width: $gridMaxWidth
             grid-template-columns: percentage(210/760) percentage(240/760) auto percentage(280/760)
             grid-template-rows: 100px auto 360px 240px 170px auto
-            grid-template-areas: "header header header header" ". . . ." "text-container text-container . ." "button-container button-container . ." "announcement announcement announcement announcement" ". . . ."
+            grid-template-areas: "header header header header" ". . . ." "text-container text-container . ." "button-container button-container . ." "announcement announcement announcement announcement" ". . triangle ."
         @include largeTablet
             grid-template-columns: percentage(360/1680) percentage(290/1680) percentage(380/1680) percentage(650/1680) // 1680px = $gridMaxWidth, percentage() bug doesn't alow sass variables
             grid-template-rows: 80px auto 400px 150px 100px auto
-            grid-template-areas: "header header header header" ". . . ." "text-container text-container img img" "button-container . img img" "button-container . announcement announcement" ". . . ."
-            min-height: 1000px
-        @include mediumDesktop
-            min-height: 100vh
+            grid-template-areas: "header header header header" ". . . ." "text-container text-container img img" "button-container . img img" "button-container . announcement announcement" ". . . triangle"
+            min-height: 850px
+        @include largeDesktop
+            height: 100vh
+            min-height: 900px
         @media ( min-width: 1920px )
             grid-template-columns: 360px 290px 380px 650px
+
+        & > div:not(.background-block)
+            position: relative
             
         & > header
             grid-area: header
 
         & > .text-container
+            z-index: 3
             grid-area: text-container
             @include largeMobile
                 min-width: 360px
@@ -98,7 +103,7 @@ $gridMaxWidth: 1680px
         & > .img
             @include largeMobile
                 position: relative
-                z-index: -1
+                z-index: 2
                 grid-area: 3 / 2 / 5 / 5
                 background: linear-gradient( rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3) ), url(../img/parallax-min.jpg) no-repeat center
                 background-size: cover
@@ -106,8 +111,7 @@ $gridMaxWidth: 1680px
                 grid-area: img
 
         & > .button-container
-            position: relative
-            z-index: 2
+            z-index: 3
             grid-area: button-container
             display: grid
             grid-template-areas: "button1 button1" "button2 button2"
@@ -165,9 +169,9 @@ $gridMaxWidth: 1680px
                 &:hover
                     background-color: color(primary-hover)
                     color: #fff
-                    
 
         & > .announcement
+            z-index: 2
             grid-area: announcement
             & > div
                 display: grid
@@ -196,24 +200,35 @@ $gridMaxWidth: 1680px
                         font-size: 23px
                     @include largeDesktop
                         font-size: 30px
-    & > .background-block
-        z-index: 1
-        position: absolute
-        right: 0
-        top: 0
-        height: 886px
-        background-color: transparent
-        max-width: 770px
-        width: percentage(770/1920)
-        float: right
-        display: none
-        @include largeMobile
-            display: block
-            background-color: color(background)
-        @include largeTablet
-            max-width: 1500px
-            background-color: #223D6E
-            width: percentage(770/1920)
-        @include largeDesktop
-            height: 100vh
+        & > .background-block
+            grid-area: 1/4/7/5
+            background-color: transparent
+            display: none
+            @include largeMobile
+                display: block
+                background-color: color(background)
+            @include largeTablet
+                background-color: #223d6e
+            &::after
+                content: ''
+                position: absolute
+                left: calc( 100% - #{percentage(700/1920)} )
+                background-color: color(background)
+                @include largeTablet
+                    background-color: #223d6e
+                display: block
+                height: 100%
+                width: 100%
+        & > .triangle
+            @include largeMobile
+                grid-area: triangle
+                align-self: end
+                height: 50px
+                width: 50px
+                margin: 0 -1px -1px 0
+                clip-path: polygon(100% 2%, 15% 100%, 100% 100%)
+                background-color: #f8f9fa
+            @include largeTablet
+                margin: 0 0 -1px -1px
+                clip-path: polygon(0 2%, 0 100%, 85% 100%)
                 
