@@ -1,84 +1,57 @@
+$buttonHeight: 75px
+$sitePaddingX: 20px //max-width: 600px or mixin largeMobile
+$gridMaxWidth: 1680px 
 .landing-page
-    display: block
-    position: relative
-    margin: 0 0 80px 0
-    height: 885px
+    overflow: hidden
+    display: grid
+    height: auto
+    justify-content: center
+    align-items: center
+    padding: 0 $sitePaddingX
+    background: linear-gradient( rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3) ), url(../img/parallax-min.jpg) no-repeat center
+    background-size: cover
     @include largeMobile
-        overflow: hidden
-        margin: 0
-        background-color: #223D6E
-        display: flex
-        align-items: center
-        padding: 0 25px
-    @include tablet
-        padding: 0 50px
+        background: none
+        padding: 0 20px
+        background-color: color(primary)
     @include largeTablet
-        background-color: #f8f9fa
+        background-color: transparent
+        padding: 0 50px
     @include mediumDesktop
-        height: 100vh
         padding: 0 120px
-
-    & > div:nth-child(1)
+    & > div
         position: relative
         z-index: 2
-        height: 820px
-        max-width: 1680px
-        margin: 0 auto
-        width: 100%
-        background-color: transparent
+        display: grid
+        grid-template-columns: auto
+        grid-template-rows: 100px 100px 340px 175px auto
+        grid-template-areas: "header" "." "text-container" "button-container" "announcement"
+        min-height: 900px
         @include largeMobile
-            margin: 50px auto 0 auto
+            min-height: 1000px
+            max-width: $gridMaxWidth
+            grid-template-columns: percentage(210/760) percentage(240/760) auto percentage(280/760)
+            grid-template-rows: 100px auto 360px 240px 170px auto
+            grid-template-areas: "header header header header" ". . . ." "text-container text-container . ." "button-container button-container . ." "announcement announcement announcement announcement" ". . . ."
         @include largeTablet
-            height: 600px
+            grid-template-columns: percentage(360/1680) percentage(290/1680) percentage(380/1680) percentage(650/1680) // 1680px = $gridMaxWidth, percentage() bug doesn't alow sass variables
+            grid-template-rows: 80px auto 400px 150px 100px auto
+            grid-template-areas: "header header header header" ". . . ." "text-container text-container img img" "button-container . img img" "button-container . announcement announcement" ". . . ."
+            min-height: 1000px
         @include mediumDesktop
-            height: 68vh
-        @include largeDesktop
-            height: 600px
-
-        & > div:nth-child(1)
-            position: absolute
-            top: 0
-            right: 0
-            background: linear-gradient( rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3) ), url(../img/parallax-min.jpg)
-            background-repeat: no-repeat
-            background-size: cover
-            background-position: center center
-            height: 735px
-            width: 100%
-            @include largeMobile
-                top: 65px
-                height: 600px
-                width: 480px
-                width: percentage(600/720)
-            @include tablet
-                height: 600px
-                width: percentage(530/720)
-            @include largeTablet
-                top: 0
-                height: 500px
-                width: percentage(900/1680)
-            @include mediumDesktop
-                height: 54vh
-            @include largeDesktop
-                width: percentage(1030/1680)
-                height: 500px
+            min-height: 100vh
+        @media ( min-width: 1920px )
+            grid-template-columns: 360px 290px 380px 650px
             
-        & > div:nth-child(2)
-            position: absolute
-            top: 70px
-            left: 0
-            width: 100%
-            padding: 0 25px
-            margin: 125px 0 0 0
+        & > header
+            grid-area: header
+
+        & > .text-container
+            grid-area: text-container
             @include largeMobile
-                min-width: 390px
-                max-width: 450px
-                margin: 35px 0 0 0
-                padding: 0
+                min-width: 360px
+                margin: 40px 0 0 0
             @include largeTablet
-                top: 0
-                max-width: auto
-                width: percentage(530/1680)
                 margin: 0
             & > p
                 @extend .disable-higlight
@@ -89,8 +62,11 @@
                 @include smallMobile
                     font-size: 25px
                 @include largeMobile
+                    font-size: 30px
+                @include tablet
                     font-size: 35px
                 @include largeTablet
+                    font-size: 32px
                     color: #000
             & > span:nth-child(2)
                 display: block
@@ -102,115 +78,78 @@
                     height: 5px
                     margin: 15px 0
                 @include largeTablet
-                    width: 150px
                     background-color: #223D6E
             & > p:nth-child(3)
-                font-size: 33px
-                @include smallMobile
-                    font-size: 40px
-                @include largeMobile
-                    font-size: 45px
                 font-weight: bold
                 color: #fff
-                @include largeTablet
-                    color: #000
-
-        & > div:nth-child(3)
-            position: absolute
-            background-color: #37583C
-            padding: 80px 25px 80px 25px
-            left: 0
-            width: 100%
-            top: 700px
-            height: 265px
-            @include largeMobile
-                padding: 65px 40px
-                height: auto
-                top: auto
-                padding: 40px
-                bottom: 75px
-                width: percentage(530/730)
-                min-width: 500px
-            @include largeTablet
-                min-width: auto
-                bottom: 0
-                left: auto
-                right: 50px
-                width: percentage(900/1680)
-            @include largeDesktop
-                right: 80px
-                width: percentage(1030/1680)
-            @media (min-width: 1440px)
-                right: 120px
-
-            & > p:nth-child(1)
-                height: auto
-                color: #fff
-                font-size: 20px
-                text-align: center
-                margin: 20px 0 0
+                font-size: 34px
+                @include smallMobile
+                    font-size: 38px
                 @include largeMobile
-                    text-align: left
-                    margin: 0
-                    font-size: 23px
-                @include largeDesktop
-                    font-size: 30px
-                
-                & > span
-                    @media ( min-width: 1100px )
-                        white-space: nowrap
+                    font-size: 43px
+                @include tablet
+                    font-size: 48px
+                @include largeTablet
+                    font-size: 44px
+                    color: #000
+                @include mediumDesktop
+                    font-size: 50px
 
-        & > div:nth-child(4)
-            position: absolute
-            height: 175px
-            bottom: 82.5px
-            width: 100%
-            padding: 0 25px
+        & > .img
             @include largeMobile
-                padding: 0
-                bottom: 300px
-                height: 75px
-                width: percentage(400/730)
-                min-width: 500px
-                left: 0
+                position: relative
+                z-index: -1
+                grid-area: 3 / 2 / 5 / 5
+                background: linear-gradient( rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3) ), url(../img/parallax-min.jpg) no-repeat center
+                background-size: cover
             @include largeTablet
-                height: 175px
-                bottom: 0
-                width: percentage(360/1680)
-                min-width: 300px
-            @include largeDesktop
-                height: 250px
+                grid-area: img
+
+        & > .button-container
+            position: relative
+            z-index: 2
+            grid-area: button-container
+            display: grid
+            grid-template-areas: "button1 button1" "button2 button2"
+            grid-template-rows: $buttonHeight $buttonHeight
+            align-content: space-between
+            @include largeMobile
+                grid-template-areas: "button1 button2"
+                grid-template-columns: 45% 45%
+                grid-template-rows: $buttonHeight
+                justify-content: space-between 
+                align-content: auto
+                align-self: center
+                min-width: 500px
+            @include largeTablet
+                grid-template-rows: 100px 100px
+                grid-template-columns: auto
+                grid-template-areas: "button1" "button2"
+                align-content: space-between
+                align-self: auto
+                justify-content: stretch
+                min-width: auto
 
             & > button
                 @extend .disable-higlight
                 @extend .pointer
-                position: absolute
-                height: 75px
+                width: 100%
                 font-weight: bold
                 font-size: 20px
-                width: calc( 100% - 50px )
-                @include largeMobile
-                    width: 45%
-                @include tablet
-                    font-size: 25px
                 @include largeTablet
-                    width: 100%
-                    height: 75px
                     font-size: 25px
                 @include largeDesktop
-                    height: 100px
                     font-size: 30px
             & > button:nth-child(1)
+                grid-area: button1
                 background-color: transparent
                 border: 4px solid color(background)
                 color: color(background)
-                top: 0
                 @include largeMobile
-                    left: 0
                 @include largeTablet
-                    top: 0
                     border: 4px solid #223D6E
                     color: #223D6E
+                @include mediumDesktop
                 &:hover
                     border: 4px solid #fff
                     color: #fff
@@ -218,58 +157,63 @@
                         border: 4px solid #223D6E
                         color: #223D6E
             & > button:nth-child(2)
+                grid-area: button2
                 background-color: #223D6E
                 color: #fff
-                bottom: 0
                 @include largeMobile
-                    right: 0
-                @include largeTablet
-                    bottom: 0
+                @include mediumDesktop
                 &:hover
                     background-color: color(primary-hover)
                     color: #fff
-                
-    & > div:nth-child(2)
+                    
+
+        & > .announcement
+            grid-area: announcement
+            & > div
+                display: grid
+                place-content: center
+                background-color: #37583C
+                height: calc(100% + (#{$buttonHeight} / 2))
+                width: calc( 100% +  (#{$sitePaddingX}) * 2)
+                margin: calc(-#{$buttonHeight} / 2) 0 0 -#{$sitePaddingX}
+                @include largeMobile
+                    height: calc( 100% + 20px )
+                    width: percentage(640/760)
+                    margin: -20px 0 0 0
+                @include largeTablet
+                    height: 150%
+                    width: 100%
+                    margin: -50px 0 0 -120px
+                & > p
+                    margin: calc(#{$buttonHeight} / 2) 0 0 0
+                    padding: 40px
+                    color: #fff
+                    font-size: 20px
+                    text-align: center
+                    @include largeMobile
+                        margin: 0
+                        text-align: left
+                        font-size: 23px
+                    @include largeDesktop
+                        font-size: 30px
+    & > .background-block
+        z-index: 1
         position: absolute
         right: 0
         top: 0
         height: 886px
-        z-index: 1
-        background-color: #f8f9fa
-        max-width: 770
+        background-color: transparent
+        max-width: 770px
         width: percentage(770/1920)
         float: right
         display: none
         @include largeMobile
             display: block
+            background-color: color(background)
         @include largeTablet
             max-width: 1500px
             background-color: #223D6E
             width: percentage(770/1920)
-        @include mediumDesktop
+        @include largeDesktop
             height: 100vh
-    & > div:nth-child(3)
-        display: none
-        position: absolute
-        z-index: 1
-        bottom: 0
-        right: calc( 40.1% - 52px )
-        width: 100px
-        height: 50px
-        margin: 0 0 -1px 0
-        @include largeMobile
-            display: block
-        @include largeTablet
-            right: calc( 40.1% - 48px )
-        & > div
-            position: absolute
-            height: 50px
-            width: 50px
-            background-color: #f8f9fa
-        & > div:nth-child(1)
-            left: 0
-            clip-path: polygon(100% 2%, 15% 100%, 100% 100%)
-        & > div:nth-child(2)
-            right: 0
-            clip-path: polygon(0 2%, 0 100%, 85% 100%)
-            
+                
