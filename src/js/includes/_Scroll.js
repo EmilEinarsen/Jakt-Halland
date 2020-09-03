@@ -16,7 +16,6 @@ function Scroll() {
 		if(!validate.isScrollingDisabled()) return
 		page.removeVerticlePositionOfBody()
 		queryTarget('body').classList.remove('stop-scrolling')
-		console.log(y)
 		this.scrollToInstantly({top: y})
 	}
 	this.direction = () => {

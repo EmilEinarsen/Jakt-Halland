@@ -15,6 +15,6 @@ function Server() {
 	}
 	this.getEvents = async() => {
 		await this.fetch()
-		return Promise.resolve(sort.sortDataByEvent())
+		return sort.sortDataByEvent()
 	}
 }

@@ -33,7 +33,7 @@ function Validate() {
 		}
 		if(e.type !== 'submit') {
 			id = targetId(e)
-			const inputContent = queryTarget(`#${id}`).value.trim()
+			const inputContent = e.target.value.trim()
 			if(this.isInputValid(inputContent, id)) errorMessages[id] = ''
 			page.formFeedback({[id]: errorMessages[id]})
 		} else {

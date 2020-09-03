@@ -92,7 +92,7 @@ formInputs.map(input => input.addEventListener("blur", e => {
 function Announce() {
 	this.events = async() => {
 		let [intensive, leader] = tools.structureApprouchingEvents(await server.getEvents())
-		let events = `Nästa kurstillfällen: `
+		let events = intensive && leader ? `Nästa kurstillfällen: ` : `Nästa kurstillfälle: `
 
 		if(intensive) {
 			page.addInnerOf('#intensiveEventDates', `Nästa kurstillfälle är den ${intensive}.<br><br>`)
@@ -104,13 +104,13 @@ function Announce() {
 			events = `${events} Jaktledarutbildning, den ${leader}.`
 		} else page.hideMe('#leadershipEventDates')
 
-		if(!(intensive && leader)) page.hideParent('#parallaxInfo')
+		if(!(intensive || leader)) page.hideParent('#parallaxInfo')
 		else page.addInnerOf('#parallaxInfo', events)
 	}
 	this.formSubmissionSuccess = () => {
 		page.addButtonSuccess()
 		form.reset()
-		tools.throttle(function() {
+		tools.throttle(() => {
 			page.removeSuccess()
 			page.resetTextareaHeight()
 		}, 3000)
@@ -169,8 +169,7 @@ function Menu() {
 		isScrollingUp ? this.addNavbarVisible() : this.removeNavbarVisible()
 	}
 	this.toggleNavbarTransparency = () => {
-		console.log(scroll.getPositionY())
-		tools.getScreenHeight() <= 750 && scroll.getPositionY() > 50 ? menu.removeNavbarTransparent() : menu.addNavbarTransparent()
+		tools.getScreenHeight() <= 750 && scroll.getPositionY() < 50 ? menu.removeNavbarTransparent() : menu.addNavbarTransparent()
 	}
 	this.addNavbarVisible = () => navbar.classList.add('visible')
 	this.removeNavbarVisible = () => navbar.classList.remove('visible')
@@ -264,7 +263,6 @@ function Scroll() {
 		if(!validate.isScrollingDisabled()) return
 		page.removeVerticlePositionOfBody()
 		queryTarget('body').classList.remove('stop-scrolling')
-		console.log(y)
 		this.scrollToInstantly({top: y})
 	}
 	this.direction = () => {
@@ -306,7 +304,7 @@ function Server() {
 	}
 	this.getEvents = async() => {
 		await this.fetch()
-		return Promise.resolve(sort.sortDataByEvent())
+		return sort.sortDataByEvent()
 	}
 }
 function Sort() {
@@ -407,7 +405,7 @@ function Tools() {
 	this.structureApprouchingEvents = ([intensive, leader]) => [
 		intensive.length === 1 ? tools.produceDateString(intensive[0]) 
 			: `${tools.produceDateString(intensive[0])} och ${tools.produceDateString(intensive[1])}`,
-		tools.produceDateString(leader[0])
+		leader.length === 1 ? tools.produceDateString(leader[0]) : ``
 	]
 }
 
@@ -445,7 +443,7 @@ function Validate() {
 		}
 		if(e.type !== 'submit') {
 			id = targetId(e)
-			const inputContent = queryTarget(`#${id}`).value.trim()
+			const inputContent = e.target.value.trim()
 			if(this.isInputValid(inputContent, id)) errorMessages[id] = ''
 			page.formFeedback({[id]: errorMessages[id]})
 		} else {

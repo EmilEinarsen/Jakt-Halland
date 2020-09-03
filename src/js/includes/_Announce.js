@@ -1,7 +1,7 @@
 function Announce() {
 	this.events = async() => {
 		let [intensive, leader] = tools.structureApprouchingEvents(await server.getEvents())
-		let events = `Nästa kurstillfällen: `
+		let events = intensive && leader ? `Nästa kurstillfällen: ` : `Nästa kurstillfälle: `
 
 		if(intensive) {
 			page.addInnerOf('#intensiveEventDates', `Nästa kurstillfälle är den ${intensive}.<br><br>`)
@@ -13,13 +13,13 @@ function Announce() {
 			events = `${events} Jaktledarutbildning, den ${leader}.`
 		} else page.hideMe('#leadershipEventDates')
 
-		if(!(intensive && leader)) page.hideParent('#parallaxInfo')
+		if(!(intensive || leader)) page.hideParent('#parallaxInfo')
 		else page.addInnerOf('#parallaxInfo', events)
 	}
 	this.formSubmissionSuccess = () => {
 		page.addButtonSuccess()
 		form.reset()
-		tools.throttle(function() {
+		tools.throttle(() => {
 			page.removeSuccess()
 			page.resetTextareaHeight()
 		}, 3000)

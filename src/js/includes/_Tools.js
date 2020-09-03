@@ -63,6 +63,6 @@ function Tools() {
 	this.structureApprouchingEvents = ([intensive, leader]) => [
 		intensive.length === 1 ? tools.produceDateString(intensive[0]) 
 			: `${tools.produceDateString(intensive[0])} och ${tools.produceDateString(intensive[1])}`,
-		tools.produceDateString(leader[0])
+		leader.length === 1 ? tools.produceDateString(leader[0]) : ``
 	]
 }
