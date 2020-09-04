@@ -91,13 +91,8 @@ formInputs.map(input => input.addEventListener("blur", e => {
 }))
 function Announce() {
 	this.events = async() => {
-<<<<<<< HEAD:public/js/main.js
-		let [intensive, leader] = tools.structureApprouchingEvents(await server.getEvents())
-		let events = intensive && leader ? `Nästa kurstillfällen: ` : `Nästa kurstillfälle: `
-=======
 		let [intensive, leader, calm] = tools.structureApprouchingEvents(await server.getEvents())
 		let events = `Nästa kurstillfällen: `
->>>>>>> dev:public/main.js
 
 		if(intensive) {
 			page.addInnerOf('#intensiveEventDates', `Nästa kurstillfälle är den ${intensive}.<br><br>`)
@@ -415,12 +410,8 @@ function Tools() {
 	this.structureApprouchingEvents = ([intensive, leader, calm]) => [
 		intensive.length === 1 ? tools.produceDateString(intensive[0]) 
 			: `${tools.produceDateString(intensive[0])} och ${tools.produceDateString(intensive[1])}`,
-<<<<<<< HEAD:public/js/main.js
-		leader.length === 1 ? tools.produceDateString(leader[0]) : ``
-=======
 		tools.produceDateString(leader[0]),
 		tools.produceDateString(calm[0])
->>>>>>> dev:public/main.js
 	]
 }
 

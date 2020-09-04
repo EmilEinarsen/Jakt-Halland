@@ -1,12 +1,7 @@
 function Announce() {
 	this.events = async() => {
-<<<<<<< HEAD
-		let [intensive, leader] = tools.structureApprouchingEvents(await server.getEvents())
-		let events = intensive && leader ? `Nästa kurstillfällen: ` : `Nästa kurstillfälle: `
-=======
 		let [intensive, leader, calm] = tools.structureApprouchingEvents(await server.getEvents())
 		let events = `Nästa kurstillfällen: `
->>>>>>> dev
 
 		if(intensive) {
 			page.addInnerOf('#intensiveEventDates', `Nästa kurstillfälle är den ${intensive}.<br><br>`)
