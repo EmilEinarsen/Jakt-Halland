@@ -26,13 +26,13 @@ const server = done => {
 const scripts = () => gulp.src('./src/js/**/*.js')
     .pipe(concat('main.js'))
     .pipe(minify())
-    .pipe(gulp.dest('./public/js'))
+    .pipe(gulp.dest('./public'))
     .pipe(browserSync.stream())
 
 const styles = () => gulp.src('src/views/sass/*.sass')
     .pipe(sass())
     .pipe(cleanCSS())
-    .pipe(gulp.dest('public/css'))
+    .pipe(gulp.dest('public'))
     .pipe(browserSync.stream())
 
 const pages = () => gulp.src('src/views/pug/*.pug')

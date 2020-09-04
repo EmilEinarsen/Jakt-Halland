@@ -60,9 +60,14 @@ function Tools() {
 			: `${startDate.date}-${endDate.date} ${startMonth}`
 		else return `${startDate.date} ${startMonth}-${endDate.date} ${this.numberToMonth(endDate.month)}`
 	}
-	this.structureApprouchingEvents = ([intensive, leader]) => [
+	this.structureApprouchingEvents = ([intensive, leader, calm]) => [
 		intensive.length === 1 ? tools.produceDateString(intensive[0]) 
 			: `${tools.produceDateString(intensive[0])} och ${tools.produceDateString(intensive[1])}`,
+<<<<<<< HEAD
 		leader.length === 1 ? tools.produceDateString(leader[0]) : ``
+=======
+		tools.produceDateString(leader[0]),
+		tools.produceDateString(calm[0])
+>>>>>>> dev
 	]
 }

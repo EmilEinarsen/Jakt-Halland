@@ -91,13 +91,23 @@ formInputs.map(input => input.addEventListener("blur", e => {
 }))
 function Announce() {
 	this.events = async() => {
+<<<<<<< HEAD:public/js/main.js
 		let [intensive, leader] = tools.structureApprouchingEvents(await server.getEvents())
 		let events = intensive && leader ? `Nästa kurstillfällen: ` : `Nästa kurstillfälle: `
+=======
+		let [intensive, leader, calm] = tools.structureApprouchingEvents(await server.getEvents())
+		let events = `Nästa kurstillfällen: `
+>>>>>>> dev:public/main.js
 
 		if(intensive) {
 			page.addInnerOf('#intensiveEventDates', `Nästa kurstillfälle är den ${intensive}.<br><br>`)
 			events = `${events} Intensiv Jägarexamen, den ${intensive}.`
 		} else page.hideMe('#intensiveEventDates')
+		
+		if(calm) {
+			page.addInnerOf('#calmEventDates', `Nästa kurstillfälle är den ${calm}.<br><br>`)
+			events = `${events} Lugn Jägarexamen, den ${calm}.`
+		} else page.hideMe('#calmEventDates')
 
 		if(leader) {
 			page.addInnerOf('#leadershipEventDates', `Nästa kurstillfälle är den ${leader}.<br><br>`)
@@ -402,10 +412,15 @@ function Tools() {
 			: `${startDate.date}-${endDate.date} ${startMonth}`
 		else return `${startDate.date} ${startMonth}-${endDate.date} ${this.numberToMonth(endDate.month)}`
 	}
-	this.structureApprouchingEvents = ([intensive, leader]) => [
+	this.structureApprouchingEvents = ([intensive, leader, calm]) => [
 		intensive.length === 1 ? tools.produceDateString(intensive[0]) 
 			: `${tools.produceDateString(intensive[0])} och ${tools.produceDateString(intensive[1])}`,
+<<<<<<< HEAD:public/js/main.js
 		leader.length === 1 ? tools.produceDateString(leader[0]) : ``
+=======
+		tools.produceDateString(leader[0]),
+		tools.produceDateString(calm[0])
+>>>>>>> dev:public/main.js
 	]
 }
 
