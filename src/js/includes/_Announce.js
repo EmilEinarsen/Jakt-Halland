@@ -1,25 +1,27 @@
 function Announce() {
 	this.events = async() => {
-		let [intensive, leader, calm] = tools.structureApprouchingEvents(await server.getEvents())
-		let events = `Nästa kurstillfällen: `
+		const events = await server.getEvents()
+		let [AbdIntensive, AbdLeader, AbdCalm] = tools.structureApprouchingEvents(events, true)
+		let [intensive, leader, calm] = tools.structureApprouchingEvents(events)
+		let eventsString = `Nästa kurstillfällen: `
 
 		if(intensive) {
 			page.addInnerOf('#intensiveEventDates', `Nästa kurstillfälle är den ${intensive}.<br><br>`)
-			events = `${events} Intensiv Jägarexamen, den ${intensive}.`
+			eventsString = `${eventsString} Intensiv Jägarexamen, den ${AbdIntensive}.`
 		} else page.hideMe('#intensiveEventDates')
 		
 		if(calm) {
 			page.addInnerOf('#calmEventDates', `Nästa kurstillfälle är den ${calm}.<br><br>`)
-			events = `${events} Lugn Jägarexamen, den ${calm}.`
+			eventsString = `${eventsString} Lugn Jägarexamen, den ${AbdCalm}.`
 		} else page.hideMe('#calmEventDates')
 
 		if(leader) {
 			page.addInnerOf('#leadershipEventDates', `Nästa kurstillfälle är den ${leader}.<br><br>`)
-			events = `${events} Jaktledarutbildning, den ${leader}.`
+			eventsString = `${eventsString} Jaktledarutbildning, den ${AbdLeader}.`
 		} else page.hideMe('#leadershipEventDates')
 
-		if(!(intensive || leader)) page.hideParent('#parallaxInfo')
-		else page.addInnerOf('#parallaxInfo', events)
+		if(!(intensive && leader)) page.hideParent('#parallaxInfo')
+		else page.addInnerOf('#parallaxInfo', eventsString)
 	}
 	this.formSubmissionSuccess = () => {
 		page.addButtonSuccess()
