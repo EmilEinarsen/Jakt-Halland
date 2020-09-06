@@ -3,6 +3,7 @@ function Tools() {
 	let throttle
 	const months = ["Januari", "Februari", "Mars", "April", "Maj", "Juni", 
 	"Juli", "Augusti", "September", "Oktober", "November", "December"]
+	const monthAbbriviations = ['jan', 'feb', 'mars', 'april', 'maj', 'juni', 'juli', 'aug', 'sep', 'okt', 'nov', 'dec']
 
 	this.lastClickTimeStamp = 0
 	this.lastScrollTimeStamp = 0
@@ -20,7 +21,7 @@ function Tools() {
 	}
 	this.cancelThrottle = () => throttle ? clearTimeout(throttle) : ''
 
-	this.numberToMonth = number => months[number-1]
+	this.numberToMonth = (number, abbriviation) => abbriviation ? monthAbbriviations[number-1] : months[number-1]
 
 	this.dateStringIntoIntObject = string => {
 		dateArr = string.split("/")
@@ -47,23 +48,23 @@ function Tools() {
 		// 0 = now, -1 = future, 1 = past
 	}
 
-	this.produceDateString = event => {
-		return combineDatesBasedOnMonthAndDate(
-			this.dateStringIntoIntObject(event.info.startDate),
-			this.dateStringIntoIntObject(event.info.endDate)
-		)
-	}
-	combineDatesBasedOnMonthAndDate = (startDate, endDate) => {
-		const startMonth = this.numberToMonth(startDate.month)
+	this.produceDateString = (event, abbriviation) => combineDatesBasedOnMonthAndDate(
+		this.dateStringIntoIntObject(event.info.startDate),
+		this.dateStringIntoIntObject(event.info.endDate), 
+		abbriviation
+	)
+
+	combineDatesBasedOnMonthAndDate = (startDate, endDate, abbriviation) => {
+		const startMonth = this.numberToMonth(startDate.month, abbriviation)
 		if(startDate.month === endDate.month)
 			return startDate.date === endDate.date ? `${startDate.date} ${startMonth}` 
 			: `${startDate.date}-${endDate.date} ${startMonth}`
-		else return `${startDate.date} ${startMonth}-${endDate.date} ${this.numberToMonth(endDate.month)}`
+		else return `${startDate.date} ${startMonth}-${endDate.date} ${this.numberToMonth(endDate.month, abbriviation)}`
 	}
-	this.structureApprouchingEvents = ([intensive, leader, calm]) => [
-		intensive.length === 1 ? tools.produceDateString(intensive[0]) 
-			: `${tools.produceDateString(intensive[0])} och ${tools.produceDateString(intensive[1])}`,
-		tools.produceDateString(leader[0]),
-		tools.produceDateString(calm[0])
+	this.structureApprouchingEvents = ([intensive, leader, calm], abbriviation) => [
+		intensive.length === 1 ? tools.produceDateString(intensive[0], abbriviation) 
+			: `${tools.produceDateString(intensive[0])} och ${tools.produceDateString(intensive[1], abbriviation)}`,
+		tools.produceDateString(leader[0], abbriviation),
+		tools.produceDateString(calm[0], abbriviation)
 	]
 }
