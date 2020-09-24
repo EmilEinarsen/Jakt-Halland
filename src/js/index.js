@@ -74,6 +74,7 @@ window.addEventListener("resize", () => {
 	if(!validate.isWidthMobile()) tools.throttle(menu.close(), 20)
 	menu.toggleNavbarTransparency()
 	lazyload.load()
+	menu.removeNavbarTransparent()
 })
 window.addEventListener("orientationChange", () => {
 	menu.toggleNavbarTransparency()

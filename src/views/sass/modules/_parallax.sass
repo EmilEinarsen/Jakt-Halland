@@ -164,8 +164,6 @@ $gridMaxWidth: 1680px
                 grid-area: button2
                 background-color: #223D6E
                 color: #fff
-                @include largeMobile
-                @include mediumDesktop
                 &:hover
                     background-color: color(primary-hover)
                     color: #fff
@@ -181,7 +179,7 @@ $gridMaxWidth: 1680px
                 width: calc( 100% +  (#{$sitePaddingX}) * 2)
                 margin: calc(-#{$buttonHeight} / 2) 0 0 -#{$sitePaddingX}
                 @include largeMobile
-                    height: calc( 100% + 20px )
+                    height: calc( 85% + 20px )
                     width: percentage(640/760)
                     margin: -20px 0 0 0
                 @include largeTablet
@@ -198,6 +196,7 @@ $gridMaxWidth: 1680px
                         margin: 0
                         text-align: left
                         font-size: 23px
+<<<<<<< HEAD
                     @include largeDesktop
                         font-size: 30px
         & > .background-block
@@ -231,4 +230,29 @@ $gridMaxWidth: 1680px
             @include largeTablet
                 margin: 0 0 -1px -1px
                 clip-path: polygon(0 2%, 0 100%, 85% 100%)
+=======
+                    & > span
+                        font-size: 16px
+                        color: lighten( #37583C, 60%)
+    & > .background-block
+        z-index: -1
+        position: absolute
+        right: 0
+        top: 0
+        height: 886px
+        background-color: transparent
+        max-width: 770px
+        width: percentage(770/1920)
+        float: right
+        display: none
+        @include largeMobile
+            display: block
+            background-color: color(background)
+        @include largeTablet
+            max-width: 1500px
+            background-color: #223D6E
+            width: percentage(770/1920)
+        @include largeDesktop
+            height: 100vh
+>>>>>>> dev
                 

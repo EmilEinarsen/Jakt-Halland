@@ -20,6 +20,8 @@ function Announce() {
 			eventsString = `${eventsString} Jaktledarutbildning, den ${AbdLeader}.`
 		} else page.hideMe('#leadershipEventDates')
 
+		eventsString = eventsString + '<span><br>(Alla kurser hålls i laholmskomun)</span>'
+
 		if(!(intensive && leader)) page.hideParent('#parallaxInfo')
 		else page.addInnerOf('#parallaxInfo', eventsString)
 	}
