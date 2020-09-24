@@ -74,6 +74,7 @@ window.addEventListener("resize", () => {
 	if(!validate.isWidthMobile()) tools.throttle(menu.close(), 20)
 	menu.toggleNavbarTransparency()
 	lazyload.load()
+	menu.removeNavbarTransparent()
 })
 window.addEventListener("orientationChange", () => {
 	menu.toggleNavbarTransparency()
@@ -93,7 +94,6 @@ function Announce() {
 	this.events = async() => {
 		let [intensive, leader, calm] = tools.structureApprouchingEvents(await server.getEvents())
 		let events = `Nästa kurstillfällen: `
-
 		if(intensive) {
 			page.addInnerOf('#intensiveEventDates', `Nästa kurstillfälle är den ${intensive}.<br><br>`)
 			events = `${events} Intensiv Jägarexamen, den ${intensive}.`
@@ -109,7 +109,9 @@ function Announce() {
 			events = `${events} Jaktledarutbildning, den ${leader}.`
 		} else page.hideMe('#leadershipEventDates')
 
-		if(!(intensive && leader)) page.hideParent('#parallaxInfo')
+		events = events + '<span><br>(Alla kurser hålls i laholmskomun)</span>'
+
+		if(!(intensive || leader)) page.hideParent('#parallaxInfo')
 		else page.addInnerOf('#parallaxInfo', events)
 	}
 	this.formSubmissionSuccess = () => {
@@ -409,7 +411,8 @@ function Tools() {
 		else return `${startDate.date} ${startMonth}-${endDate.date} ${this.numberToMonth(endDate.month)}`
 	}
 	this.structureApprouchingEvents = ([intensive, leader, calm]) => [
-		intensive.length === 1 ? tools.produceDateString(intensive[0]) 
+		intensive.length === 0 ? ''
+			: intensive.length === 1 ? tools.produceDateString(intensive[0]) 
 			: `${tools.produceDateString(intensive[0])} och ${tools.produceDateString(intensive[1])}`,
 		tools.produceDateString(leader[0]),
 		tools.produceDateString(calm[0])

@@ -61,7 +61,8 @@ function Tools() {
 		else return `${startDate.date} ${startMonth}-${endDate.date} ${this.numberToMonth(endDate.month)}`
 	}
 	this.structureApprouchingEvents = ([intensive, leader, calm]) => [
-		intensive.length === 1 ? tools.produceDateString(intensive[0]) 
+		intensive.length === 0 ? ''
+			: intensive.length === 1 ? tools.produceDateString(intensive[0]) 
 			: `${tools.produceDateString(intensive[0])} och ${tools.produceDateString(intensive[1])}`,
 		tools.produceDateString(leader[0]),
 		tools.produceDateString(calm[0])
