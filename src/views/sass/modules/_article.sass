@@ -9,7 +9,8 @@
 		font-size: 10vw
 		@include listDesktop
 			font-size: 50px
-
+.articles
+	background-color: color(background)
 .article
 	min-width: 275px
 	max-width: 1000px
@@ -77,6 +78,7 @@
 
 .article-1
 	@extend .article
+	margin: 0 auto 40px auto
 	& > div:nth-child(1)
 		background: linear-gradient( rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3) ), url(../img/shooter-1200x1000-min.jpg)
 		background-size: cover
