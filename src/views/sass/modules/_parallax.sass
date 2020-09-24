@@ -182,6 +182,8 @@ $gridMaxWidth: 1680px
                     height: calc( 85% + 20px )
                     width: percentage(640/760)
                     margin: -20px 0 0 0
+                    justify-content: start
+                    align-content: center
                 @include largeTablet
                     height: 150%
                     width: 100%
@@ -196,41 +198,6 @@ $gridMaxWidth: 1680px
                         margin: 0
                         text-align: left
                         font-size: 23px
-<<<<<<< HEAD
-                    @include largeDesktop
-                        font-size: 30px
-        & > .background-block
-            grid-area: 1/4/7/5
-            background-color: transparent
-            display: none
-            @include largeMobile
-                display: block
-                background-color: color(background)
-            @include largeTablet
-                background-color: #223d6e
-            &::after
-                content: ''
-                position: absolute
-                left: calc( 100% - #{percentage(700/1920)} )
-                background-color: color(background)
-                @include largeTablet
-                    background-color: #223d6e
-                display: block
-                height: 100%
-                width: 100%
-        & > .triangle
-            @include largeMobile
-                grid-area: triangle
-                align-self: end
-                height: 50px
-                width: 50px
-                margin: 0 -1px -1px 0
-                clip-path: polygon(100% 2%, 15% 100%, 100% 100%)
-                background-color: #f8f9fa
-            @include largeTablet
-                margin: 0 0 -1px -1px
-                clip-path: polygon(0 2%, 0 100%, 85% 100%)
-=======
                     & > span
                         font-size: 16px
                         color: lighten( #37583C, 60%)
@@ -254,5 +221,4 @@ $gridMaxWidth: 1680px
             width: percentage(770/1920)
         @include largeDesktop
             height: 100vh
->>>>>>> dev
                 

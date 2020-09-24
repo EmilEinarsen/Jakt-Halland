@@ -1,9 +1,11 @@
 function Announce() {
 	this.events = async() => {
 		const events = await server.getEvents()
-		let [AbdIntensive, AbdLeader, AbdCalm] = tools.structureApprouchingEvents(events, true)
 		let [intensive, leader, calm] = tools.structureApprouchingEvents(events)
+		let [AbdIntensive, AbdLeader, AbdCalm] = (intensive.length + leader.length + calm.length <= 25)  ? tools.structureApprouchingEvents(events, true) : tools.structureApprouchingEvents(events)
 		let eventsString = `Nästa kurstillfällen: `
+
+
 
 		if(intensive) {
 			page.addInnerOf('#intensiveEventDates', `Nästa kurstillfälle är den ${intensive}.<br><br>`)
@@ -22,7 +24,7 @@ function Announce() {
 
 		eventsString = eventsString + '<span><br>(Alla kurser hålls i laholmskomun)</span>'
 
-		if(!(intensive && leader)) page.hideParent('#parallaxInfo')
+		if(!(intensive || leader)) page.hideParent('#parallaxInfo')
 		else page.addInnerOf('#parallaxInfo', eventsString)
 	}
 	this.formSubmissionSuccess = () => {
